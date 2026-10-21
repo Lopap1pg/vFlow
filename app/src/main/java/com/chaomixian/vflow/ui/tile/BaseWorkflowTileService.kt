@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import com.chaomixian.vflow.R
 import com.chaomixian.vflow.core.execution.WorkflowExecutor
 import com.chaomixian.vflow.core.workflow.TileManager
 import com.chaomixian.vflow.core.workflow.WorkflowManager
@@ -57,11 +58,11 @@ abstract class BaseWorkflowTileService : TileService() {
 
         if (workflowId == null) {
             qsTile.state = Tile.STATE_INACTIVE
-            qsTile.label = "Tile ${tileIndex + 1}"
+            qsTile.label = getString(R.string.tile_label, tileIndex + 1)
         } else {
             val workflow = workflowManager.getWorkflow(workflowId)
             qsTile.state = if (workflow != null && workflow.isEnabled) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
-            qsTile.label = workflow?.name ?: "Tile ${tileIndex + 1}"
+            qsTile.label = workflow?.name ?: getString(R.string.tile_label, tileIndex + 1)
         }
 
         qsTile.updateTile()
@@ -74,7 +75,7 @@ abstract class BaseWorkflowTileService : TileService() {
         if (workflow == null) {
             android.widget.Toast.makeText(
                 applicationContext,
-                "工作流不存在",
+                getString(R.string.tile_workflow_not_found),
                 android.widget.Toast.LENGTH_SHORT
             ).show()
             return
@@ -85,7 +86,7 @@ abstract class BaseWorkflowTileService : TileService() {
         if (!isManualTrigger) {
             android.widget.Toast.makeText(
                 applicationContext,
-                "此工作流不是手动触发器，无法通过Tile执行",
+                getString(R.string.tile_manual_trigger_required),
                 android.widget.Toast.LENGTH_SHORT
             ).show()
             return
@@ -93,7 +94,7 @@ abstract class BaseWorkflowTileService : TileService() {
 
         android.widget.Toast.makeText(
             applicationContext,
-            "执行工作流: ${workflow.name}",
+            getString(R.string.tile_executing_workflow, workflow.name),
             android.widget.Toast.LENGTH_SHORT
         ).show()
 
