@@ -13,5 +13,6 @@
     <string name="find_text_root_unavailable_title">服务错误</string>
     <string name="find_text_root_unavailable_detail">无法获取到当前窗口的根节点。</string>
     <string name="find_text_no_match_title">未找到文本</string>
+    <string name="find_text_no_match_detail">未在屏幕上找到匹配的文本: “%1$s”（匹配模式: %2$s）</string>
     <string name="find_text_unknown_error">发生了未知错误</string>
 </resources>
