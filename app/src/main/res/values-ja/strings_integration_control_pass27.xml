@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="integration_control_parameter_error_title">パラメータエラー</string>
+    <string name="integration_control_invalid_action">無効な%1$s操作: %2$s</string>
+    <string name="integration_control_sending">%1$s に「%2$s」の制御Intentを送信しています...</string>
+    <string name="integration_control_call_failed_title">%1$s の呼び出しに失敗しました</string>
+    <string name="integration_control_send_failed">制御Intentの送信に失敗しました: %1$s</string>
+    <string name="integration_control_unknown_error">不明なエラー</string>
+</resources>
