@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loop_validation_invalid_number_format">Invalid number format</string>
+    <string name="loop_validation_count_positive">Loop count must be greater than 0</string>
+    <string name="loop_parameter_error_title">Parameter error</string>
+    <string name="loop_count_parse_failed">Unable to parse “%1$s” as a valid loop count</string>
+    <string name="loop_count_required">Loop count cannot be empty</string>
+    <string name="loop_count_must_be_number">Loop count must be a valid number</string>
+    <string name="loop_started">Loop started. Total iterations: %1$d</string>
+    <string name="loop_execution_error_title">Execution error</string>
+    <string name="loop_end_not_in_loop">The End Loop module is not inside a Loop block.</string>
+    <string name="loop_iteration_finished">Loop iteration %1$d finished</string>
+    <string name="bluetooth_parameter_error_title">Parameter error</string>
+    <string name="bluetooth_shell_attempt">Trying to execute through Shell...</string>
+</resources>
