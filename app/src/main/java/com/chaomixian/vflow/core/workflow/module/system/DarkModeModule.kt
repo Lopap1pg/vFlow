@@ -9,7 +9,6 @@ import com.chaomixian.vflow.core.types.VTypeRegistry
 import com.chaomixian.vflow.core.types.basic.VBoolean
 import com.chaomixian.vflow.core.workflow.model.ActionStep
 import com.chaomixian.vflow.permissions.Permission
-import com.chaomixian.vflow.permissions.PermissionManager
 import com.chaomixian.vflow.services.ShellManager
 import com.chaomixian.vflow.ui.workflow_editor.PillUtil
 
@@ -45,7 +44,6 @@ class DarkModeModule : BaseModule() {
         return ShellManager.getRequiredPermissions(appContext)
     }
 
-    // 序列化值使用与语言无关的标识符
     companion object {
         const val MODE_AUTO = "auto"
         const val MODE_DARK = "dark"
@@ -90,7 +88,6 @@ class DarkModeModule : BaseModule() {
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
         val mode = getInputs().normalizeEnumValue("mode", step.parameters["mode"] as? String, MODE_AUTO) ?: MODE_AUTO
 
-        // 序列化值转换为本地化显示文本
         val displayText = when (mode) {
             MODE_DARK -> context.getString(R.string.option_vflow_system_darkmode_dark)
             MODE_LIGHT -> context.getString(R.string.option_vflow_system_darkmode_light)
@@ -106,6 +103,7 @@ class DarkModeModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val mode = getInputs().normalizeEnumValue("mode", context.getVariable("mode").asString(), MODE_AUTO) ?: MODE_AUTO
 
         val command = when (mode) {
@@ -113,20 +111,18 @@ class DarkModeModule : BaseModule() {
             MODE_LIGHT -> "cmd uimode night no"
             MODE_AUTO -> "cmd uimode night auto"
             MODE_TOGGLE -> {
-                // 切换模式：获取当前状态并切换
                 val currentResult = ShellManager.execShellCommand(
-                    context.applicationContext,
+                    appContext,
                     "settings get secure ui_night_mode"
                 )
                 if (currentResult.startsWith("Error")) {
-                    // 无法读取，默认切换到深色
                     "cmd uimode night yes"
                 } else {
                     val currentValue = currentResult.trim().toIntOrNull() ?: 0
                     when (currentValue) {
-                        1 -> "cmd uimode night yes"  // 当前浅色，切换到深色
-                        2, 0, -1 -> "cmd uimode night no"  // 当前深色/自动，切换到浅色
-                        else -> "cmd uimode night yes"  // 默认切换到深色
+                        1 -> "cmd uimode night yes"
+                        2, 0, -1 -> "cmd uimode night no"
+                        else -> "cmd uimode night yes"
                     }
                 }
             }
@@ -135,27 +131,26 @@ class DarkModeModule : BaseModule() {
 
         if (command == null) {
             return ExecutionResult.Failure(
-                "参数错误",
-                "不支持的模式: $mode"
+                appContext.getString(R.string.dark_mode_parameter_error_title),
+                appContext.getString(R.string.dark_mode_unsupported_mode, mode)
             )
         }
 
-        // 获取本地化的模式名称用于提示
         val modeDisplayName = when (mode) {
-            MODE_DARK -> context.applicationContext.getString(R.string.option_vflow_system_darkmode_dark)
-            MODE_LIGHT -> context.applicationContext.getString(R.string.option_vflow_system_darkmode_light)
-            MODE_TOGGLE -> context.applicationContext.getString(R.string.option_vflow_system_darkmode_toggle)
-            else -> context.applicationContext.getString(R.string.option_vflow_system_darkmode_auto)
+            MODE_DARK -> appContext.getString(R.string.option_vflow_system_darkmode_dark)
+            MODE_LIGHT -> appContext.getString(R.string.option_vflow_system_darkmode_light)
+            MODE_TOGGLE -> appContext.getString(R.string.option_vflow_system_darkmode_toggle)
+            else -> appContext.getString(R.string.option_vflow_system_darkmode_auto)
         }
 
-        onProgress(ProgressUpdate("正在${modeDisplayName}..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.dark_mode_applying, modeDisplayName)))
 
-        val result = ShellManager.execShellCommand(context.applicationContext, command)
+        val result = ShellManager.execShellCommand(appContext, command)
 
         return if (result.startsWith("Error:")) {
-            ExecutionResult.Failure("切换失败", result)
+            ExecutionResult.Failure(appContext.getString(R.string.dark_mode_switch_failed_title), result)
         } else {
-            onProgress(ProgressUpdate("完成"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.dark_mode_completed)))
             ExecutionResult.Success(mapOf("success" to VBoolean(true)))
         }
     }

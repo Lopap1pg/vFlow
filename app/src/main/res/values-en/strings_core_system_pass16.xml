@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_runtime_not_connected_title">Core not connected</string>
+    <string name="core_runtime_not_connected_detail">The vFlow Core service is not running. Make sure Shizuku or Root permission has been granted.</string>
+    <string name="core_runtime_execution_failed_title">Execution failed</string>
+    <string name="core_runtime_state_enabled">enabled</string>
+    <string name="core_runtime_state_disabled">disabled</string>
+    <string name="core_wifi_state_reading">Reading Wi-Fi state with vFlow Core...</string>
+    <string name="core_wifi_state_result">Wi-Fi state: %1$s</string>
+    <string name="core_wake_screen_progress">Waking the screen with vFlow Core...</string>
+    <string name="core_wake_screen_success">Screen wake succeeded</string>
+    <string name="core_wake_screen_failed">vFlow Core failed to wake the screen</string>
+    <string name="core_sleep_screen_progress">Turning the screen off with vFlow Core...</string>
+    <string name="core_sleep_screen_success">Screen turned off successfully</string>
+    <string name="core_sleep_screen_failed">vFlow Core failed to turn the screen off</string>
+    <string name="dark_mode_parameter_error_title">Parameter error</string>
+    <string name="dark_mode_unsupported_mode">Unsupported mode: %1$s</string>
+    <string name="dark_mode_applying">Applying %1$s mode...</string>
+    <string name="dark_mode_switch_failed_title">Switch failed</string>
+    <string name="dark_mode_completed">Done</string>
+</resources>

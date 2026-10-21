@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_runtime_not_connected_title">Core 未连接</string>
+    <string name="core_runtime_not_connected_detail">vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。</string>
+    <string name="core_runtime_execution_failed_title">执行失败</string>
+    <string name="core_runtime_state_enabled">已开启</string>
+    <string name="core_runtime_state_disabled">已关闭</string>
+    <string name="core_wifi_state_reading">正在使用 vFlow Core 读取 Wi-Fi 状态...</string>
+    <string name="core_wifi_state_result">Wi-Fi 状态: %1$s</string>
+    <string name="core_wake_screen_progress">正在使用 vFlow Core 唤醒屏幕...</string>
+    <string name="core_wake_screen_success">屏幕唤醒成功</string>
+    <string name="core_wake_screen_failed">vFlow Core 屏幕唤醒失败</string>
+    <string name="core_sleep_screen_progress">正在使用 vFlow Core 关闭屏幕...</string>
+    <string name="core_sleep_screen_success">屏幕关闭成功</string>
+    <string name="core_sleep_screen_failed">vFlow Core 屏幕关闭失败</string>
+    <string name="dark_mode_parameter_error_title">参数错误</string>
+    <string name="dark_mode_unsupported_mode">不支持的模式: %1$s</string>
+    <string name="dark_mode_applying">正在应用%1$s模式...</string>
+    <string name="dark_mode_switch_failed_title">切换失败</string>
+    <string name="dark_mode_completed">完成</string>
+</resources>
