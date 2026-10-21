@@ -9,14 +9,8 @@ import com.chaomixian.vflow.core.execution.ExecutionContext
 import com.chaomixian.vflow.core.execution.VariableResolver
 import com.chaomixian.vflow.core.module.*
 import com.chaomixian.vflow.core.types.VTypeRegistry
-import com.chaomixian.vflow.core.types.VObject
-import com.chaomixian.vflow.core.types.basic.VString
-import com.chaomixian.vflow.core.types.basic.VNumber
 import com.chaomixian.vflow.core.types.basic.VBoolean
-import com.chaomixian.vflow.core.types.basic.VDictionary
-import com.chaomixian.vflow.core.types.basic.VList
 import com.chaomixian.vflow.core.types.complex.VImage
-import com.chaomixian.vflow.core.types.basic.VNull
 import com.chaomixian.vflow.core.workflow.model.ActionStep
 import com.chaomixian.vflow.permissions.PermissionManager
 import com.chaomixian.vflow.services.ExecutionUIService
@@ -32,8 +26,8 @@ class QuickViewModule : BaseModule() {
     override val metadata = ActionMetadata(
         nameStringRes = R.string.module_vflow_data_quick_view_name,
         descriptionStringRes = R.string.module_vflow_data_quick_view_desc,
-        name = "快速查看",  // Fallback
-        description = "在悬浮窗中显示文本、数字、图片等各种类型的内容。",  // Fallback
+        name = "快速查看",
+        description = "在悬浮窗中显示文本、数字、图片等各种类型的内容。",
         iconRes = R.drawable.rounded_preview_24,
         category = "应用与系统",
         categoryId = "device"
@@ -49,27 +43,20 @@ class QuickViewModule : BaseModule() {
         requiredInputIds = setOf("content")
     )
 
-    // 此模块需要悬浮窗权限才能显示UI
     override val requiredPermissions = listOf(PermissionManager.OVERLAY)
 
-    /**
-     * 定义模块的输入参数。
-     */
     override fun getInputs(): List<InputDefinition> = listOf(
         InputDefinition(
             id = "content",
             nameStringRes = R.string.param_vflow_data_quick_view_content_name,
-            name = "内容",  // Fallback
-            staticType = ParameterType.ANY, // 接受任何类型的输入
+            name = "内容",
+            staticType = ParameterType.ANY,
             defaultValue = "",
             acceptsMagicVariable = true,
             supportsRichText = true
         )
     )
 
-    /**
-     * 增加 success 输出以保持统一。
-     */
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
         OutputDefinition(
             "success",
@@ -79,13 +66,9 @@ class QuickViewModule : BaseModule() {
         )
     )
 
-    /**
-     * 生成模块摘要。
-     */
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
         val rawContent = step.parameters["content"]?.toString() ?: ""
 
-        // 检查内容是否为复杂内容（包含变量或其他文本的组合）
         if (VariableResolver.isComplex(rawContent)) {
             return PillUtil.buildSpannable(
                 context,
@@ -94,7 +77,6 @@ class QuickViewModule : BaseModule() {
             )
         }
 
-        // 简单内容：显示完整的摘要（带药丸）
         val contentPill = PillUtil.createPillFromParam(
             step.parameters["content"],
             getInputs().find { it.id == "content" }
@@ -102,35 +84,36 @@ class QuickViewModule : BaseModule() {
         return PillUtil.buildSpannable(context, context.getString(R.string.summary_vflow_system_quick_view_prefix), contentPill)
     }
 
-    /**
-     * 执行模块逻辑。
-     * 现在会输出一个布尔值表示操作是否成功完成。
-     */
     override suspend fun execute(
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val uiService = context.services.get(ExecutionUIService::class)
-            ?: return ExecutionResult.Failure("服务缺失", "无法获取UI服务来显示内容。")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_data_quick_view_service_missing),
+                appContext.getString(R.string.error_vflow_data_quick_view_cannot_get_ui)
+            )
 
-        onProgress(ProgressUpdate("正在显示内容..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_data_quick_view_showing)))
 
-        // 先获取原始内容，检查是否为图片变量
         val contentRaw = context.getVariable("content")
+        val title = metadata.getLocalizedName(appContext)
 
-        // 如果原始内容是图片，直接显示图片
         if (contentRaw is VImage) {
-            uiService.showQuickViewImage("快速查看", contentRaw.uriString)
+            uiService.showQuickViewImage(title, contentRaw.uriString)
         } else {
-            // 否则解析变量并显示文本内容
             val contentAsString = contentRaw.asString()
             val resolvedContent = VariableResolver.resolve(contentAsString, context)
-            val displayText = if (resolvedContent.isNullOrBlank()) "[空值]" else resolvedContent
-            uiService.showQuickView("快速查看", displayText)
+            val displayText = if (resolvedContent.isNullOrBlank()) {
+                appContext.getString(R.string.quick_view_empty_value)
+            } else {
+                resolvedContent
+            }
+            uiService.showQuickView(title, displayText)
         }
 
-        onProgress(ProgressUpdate("用户已关闭查看窗口"))
-        // 返回成功结果
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_data_quick_view_closed)))
         return ExecutionResult.Success(mapOf("success" to VBoolean(true)))
     }
 }
