@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_view_empty_value">[空の値]</string>
+    <string name="choose_list_default_prompt">選択してください</string>
+    <string name="choose_list_invalid_title">無効なリスト</string>
+    <string name="choose_list_invalid_detail">入力にはリスト変数を選択してください。</string>
+    <string name="choose_list_empty_title">リストが空です</string>
+    <string name="choose_list_empty_detail">選択できる項目がありません。</string>
+    <string name="choose_list_service_missing_title">サービスがありません</string>
+    <string name="choose_list_service_missing_detail">リストを表示できません。</string>
+    <string name="choose_list_cancelled_title">選択をキャンセルしました</string>
+    <string name="choose_list_cancelled_detail">リストの選択がキャンセルされました。</string>
+    <string name="choose_list_selection_invalid_title">無効な選択</string>
+    <string name="choose_list_selection_invalid_detail">選択した項目が見つかりません。</string>
+    <string name="choose_list_selected">選択: %1$s</string>
+</resources>
