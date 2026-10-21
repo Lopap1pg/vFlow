@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="battery_status_fetch_failed_title">获取失败</string>
+    <string name="battery_status_info_unavailable">无法获取电池信息</string>
+    <string name="battery_status_level_invalid">无法获取有效的电池电量</string>
+    <string name="battery_status_temperature_invalid">无法获取有效的电池温度</string>
+    <string name="system_info_fetch_failed_title">获取失败</string>
+    <string name="system_info_invalid_value">无效的信息类型: %1$s</string>
+</resources>
