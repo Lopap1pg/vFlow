@@ -23,7 +23,7 @@ object LocaleManager {
     /**
      * 应用支持的语言列表
      *
-     * Key: 语言代码（如 "zh", "en"）
+     * Key: 语言代码（如 "zh", "en", "ja"）
      * Value: 语言的显示名称（用于在设置界面显示）
      */
     val SUPPORTED_LANGUAGES = mapOf(
@@ -37,6 +37,7 @@ object LocaleManager {
      *
      * 如果用户没有手动设置过语言（首次启动），则根据系统语言自动选择：
      * - 系统语言是中文（简体/繁体）时使用 "zh"
+     * - 系统语言是日语时使用 "ja"
      * - 其他情况使用 "en"
      *
      * @param context Android上下文
@@ -51,31 +52,31 @@ object LocaleManager {
             savedLanguage
         } else {
             // 首次启动，根据系统语言自动选择
-            if (isSystemLanguageChinese()) {
-                "zh"
-            } else {
-                "en"
-            }
+            resolveSystemLanguage(Locale.getDefault())
         }
     }
 
     /**
-     * 检查系统语言是否为中文（简体或繁体）
-     *
-     * @return 如果系统语言是中文返回true，否则返回false
+     * 根据系统 Locale 解析应用默认语言。
      */
-    private fun isSystemLanguageChinese(): Boolean {
-        val systemLanguage = Locale.getDefault().language
-        val systemCountry = Locale.getDefault().country
+    internal fun resolveSystemLanguage(locale: Locale): String {
+        return when {
+            locale.language == "ja" -> "ja"
+            isChineseLocale(locale) -> "zh"
+            else -> "en"
+        }
+    }
 
-        // 检查语言是否为中文
-        return if (systemLanguage == "zh") {
-            true
-        } else {
-            // 检查一些常见的中文地区设置（例如有些设备使用 "cn"、"tw" 等作为语言代码）
-            listOf("CN", "TW", "HK", "MO", "SG").any {
-                systemCountry.equals(it, ignoreCase = true)
-            }
+    /**
+     * 检查 Locale 是否为中文（简体或繁体）。
+     */
+    private fun isChineseLocale(locale: Locale): Boolean {
+        if (locale.language == "zh") {
+            return true
+        }
+
+        return listOf("CN", "TW", "HK", "MO", "SG").any {
+            locale.country.equals(it, ignoreCase = true)
         }
     }
 
@@ -83,7 +84,7 @@ object LocaleManager {
      * 设置应用语言并持久化
      *
      * @param context Android上下文
-     * @param languageCode 语言代码（如 "zh", "en"）
+     * @param languageCode 语言代码（如 "zh", "en", "ja"）
      */
     fun setLanguage(context: Context, languageCode: String) {
         getPersistence(context).edit().putString(KEY_LANGUAGE, languageCode).apply()
