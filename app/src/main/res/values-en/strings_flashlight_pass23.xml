@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="flashlight_strength_hint_supported">Strength percentage (1–100)</string>
+    <string name="flashlight_strength_hint_unsupported">Not supported on this system (requires Android 13+)</string>
+</resources>
