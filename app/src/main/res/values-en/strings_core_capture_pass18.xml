@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_capture_screen_progress">Capturing screenshot...</string>
+    <string name="core_capture_screen_success">Screenshot captured</string>
+    <string name="core_capture_screen_failed_title">Screenshot failed</string>
+    <string name="core_capture_screen_no_data">No screenshot data was returned</string>
+    <string name="core_capture_screen_failed_detail">Screenshot failed: %1$s</string>
+</resources>
