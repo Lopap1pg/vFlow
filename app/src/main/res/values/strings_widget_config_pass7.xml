@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_config_layout_4x2">4x2 网格（4个）</string>
+    <string name="widget_config_layout_2x2">2x2 纵向（2个）</string>
+    <string name="widget_config_deleted_workflow">已删除的工作流</string>
+    <string name="widget_config_title">配置小组件</string>
+    <string name="widget_config_select_workflows_count">选择工作流（%1$d个）</string>
+    <string name="widget_config_slot_with_workflow">插槽 %1$d: %2$s</string>
+    <string name="widget_config_select_slot">选择插槽 %1$d</string>
+    <string name="widget_config_clear_slot">[清空插槽]</string>
+    <string name="widget_config_select_slot_workflow">选择插槽 %1$d 的工作流</string>
+</resources>
