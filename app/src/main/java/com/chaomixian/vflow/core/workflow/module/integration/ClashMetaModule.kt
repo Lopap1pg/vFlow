@@ -99,7 +99,10 @@ class ClashMetaModule : BaseModule() {
         return if (action in actionOptions) {
             ValidationResult(true)
         } else {
-            ValidationResult(false, "无效的 Clash Meta 操作: $action")
+            ValidationResult(
+                false,
+                appContext.getString(R.string.integration_control_invalid_action, metadata.getLocalizedName(appContext), action)
+            )
         }
     }
 
@@ -107,18 +110,25 @@ class ClashMetaModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val actionInput = getInputs().first { it.id == "action" }
         val rawAction = context.getVariableAsString("action", ACTION_TOGGLE)
         val action = actionInput.normalizeEnumValue(rawAction) ?: rawAction
+        val actionIndex = actionInput.options.indexOf(action)
+        val actionDisplay = actionInput.getLocalizedOptions(appContext).getOrNull(actionIndex) ?: action
+        val appName = metadata.getLocalizedName(appContext)
         val intentAction = when (action) {
             ACTION_START -> START_ACTION
             ACTION_STOP -> STOP_ACTION
             ACTION_TOGGLE -> TOGGLE_ACTION
-            else -> return ExecutionResult.Failure("参数错误", "无效的 Clash Meta 操作: $action")
+            else -> return ExecutionResult.Failure(
+                appContext.getString(R.string.integration_control_parameter_error_title),
+                appContext.getString(R.string.integration_control_invalid_action, appName, action)
+            )
         }
 
         return try {
-            onProgress(ProgressUpdate("正在发送 Clash Meta $action 控制 Intent..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.integration_control_sending, appName, actionDisplay)))
             val intent = Intent(intentAction)
                 .setComponent(ComponentName(PACKAGE_NAME, CONTROL_ACTIVITY))
                 .addCategory(Intent.CATEGORY_DEFAULT)
@@ -127,7 +137,7 @@ class ClashMetaModule : BaseModule() {
                 .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
                 .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
-            context.applicationContext.startActivity(intent)
+            appContext.startActivity(intent)
             ExecutionResult.Success(
                 mapOf(
                     "success" to VBoolean(true),
@@ -135,7 +145,10 @@ class ClashMetaModule : BaseModule() {
                 )
             )
         } catch (e: Exception) {
-            ExecutionResult.Failure("Clash Meta 调用失败", "发送控制 Intent 失败: ${e.message}")
+            ExecutionResult.Failure(
+                appContext.getString(R.string.integration_control_call_failed_title, appName),
+                appContext.getString(R.string.integration_control_send_failed, e.message ?: appContext.getString(R.string.integration_control_unknown_error))
+            )
         }
     }
 }
