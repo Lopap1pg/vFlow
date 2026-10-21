@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_launcher_file_access_required">vFlowCoreを起動するにはファイルアクセス権限が必要です</string>
+    <string name="core_launcher_deploy_failed">vFlowCore.dexの展開に失敗しました: %1$s</string>
+    <string name="core_launcher_deploy_failed_short">vFlowCore.dexの展開に失敗しました</string>
+    <string name="core_launcher_ping_timeout">起動後にvFlowCoreから応答がありません（5秒でタイムアウト）</string>
+</resources>

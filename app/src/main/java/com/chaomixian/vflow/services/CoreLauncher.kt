@@ -3,6 +3,7 @@ package com.chaomixian.vflow.services
 
 import android.content.Context
 import android.widget.Toast
+import com.chaomixian.vflow.R
 import com.chaomixian.vflow.core.logging.DebugLogger
 import com.chaomixian.vflow.core.utils.StorageManager
 import com.chaomixian.vflow.permissions.PermissionManager
@@ -93,7 +94,7 @@ object CoreLauncher {
                 return LaunchResult(
                     success = false,
                     mode = mode,
-                    error = "部署 vFlowCore.dex 失败"
+                    error = context.getString(R.string.core_launcher_deploy_failed_short)
                 )
             }
 
@@ -146,7 +147,7 @@ object CoreLauncher {
                     LaunchResult(
                         success = false,
                         mode = finalMode,
-                        error = "启动后未响应 Ping (等待5秒后超时)"
+                        error = context.getString(R.string.core_launcher_ping_timeout)
                     )
                 }
             }
@@ -277,7 +278,7 @@ object CoreLauncher {
             DebugLogger.w(TAG, "存储权限未授予，无法部署 vFlowCore.dex")
             Toast.makeText(
                 context,
-                "需要文件访问权限才能启动 vFlowCore",
+                context.getString(R.string.core_launcher_file_access_required),
                 Toast.LENGTH_LONG
             ).show()
             return null
@@ -308,7 +309,7 @@ object CoreLauncher {
             DebugLogger.e(TAG, "部署 vFlowCore.dex 失败", e)
             Toast.makeText(
                 context,
-                "部署 vFlowCore.dex 失败: ${e.message}",
+                context.getString(R.string.core_launcher_deploy_failed, e.message ?: ""),
                 Toast.LENGTH_LONG
             ).show()
             return null

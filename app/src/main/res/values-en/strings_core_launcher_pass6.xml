@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_launcher_file_access_required">File access permission is required to start vFlowCore</string>
+    <string name="core_launcher_deploy_failed">Failed to deploy vFlowCore.dex: %1$s</string>
+    <string name="core_launcher_deploy_failed_short">Failed to deploy vFlowCore.dex</string>
+    <string name="core_launcher_ping_timeout">vFlowCore did not respond after launch (timed out after 5 seconds)</string>
+</resources>
