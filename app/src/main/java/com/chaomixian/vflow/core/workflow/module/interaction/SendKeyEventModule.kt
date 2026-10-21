@@ -49,10 +49,8 @@ class SendKeyEventModule : BaseModule() {
         requiredInputIds = setOf("key_action"),
     )
 
-    // 需要无障碍服务权限来发送全局按键事件
     override val requiredPermissions = listOf(PermissionManager.ACCESSIBILITY)
 
-    // 定义支持的按键及其对应的系统常量
     private val keyOptions = mapOf(
         ACTION_BACK to AccessibilityService.GLOBAL_ACTION_BACK,
         ACTION_HOME to AccessibilityService.GLOBAL_ACTION_HOME,
@@ -65,7 +63,7 @@ class SendKeyEventModule : BaseModule() {
     override fun getInputs(): List<InputDefinition> = listOf(
         InputDefinition(
             id = "key_action",
-            name = "全局操作", // 名称更新
+            name = "全局操作",
             staticType = ParameterType.ENUM,
             defaultValue = ACTION_BACK,
             options = keyOptions.keys.toList(),
@@ -116,22 +114,33 @@ class SendKeyEventModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val service = context.services.get(VFlowAccessibilityService::class)
-            ?: return ExecutionResult.Failure("服务未连接", "执行此操作需要无障碍服务。")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.send_key_service_not_connected_title),
+                appContext.getString(R.string.send_key_service_required_detail)
+            )
 
         val actionInput = getInputs().first { it.id == "key_action" }
         val rawKeyName = context.getVariableAsString("key_action", ACTION_BACK)
         val keyName = actionInput.normalizeEnumValue(rawKeyName) ?: rawKeyName
         val action = keyOptions[keyName]
-            ?: return ExecutionResult.Failure("参数错误", "无效的操作名称: $keyName")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.send_key_parameter_error_title),
+                appContext.getString(R.string.send_key_invalid_action, keyName)
+            )
+        val actionDisplayName = actionInput.getLocalizedOption(appContext, keyName) ?: keyName
 
-        onProgress(ProgressUpdate("正在执行操作: $keyName"))
+        onProgress(ProgressUpdate(appContext.getString(R.string.send_key_executing, actionDisplayName)))
 
         val success = service.performGlobalAction(action)
 
         if (!success) {
-            onProgress(ProgressUpdate("执行操作失败: $keyName"))
-            return ExecutionResult.Failure("操作失败", "系统未能成功执行该全局操作。")
+            onProgress(ProgressUpdate(appContext.getString(R.string.send_key_execution_failed_progress, actionDisplayName)))
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.send_key_execution_failed_title),
+                appContext.getString(R.string.send_key_execution_failed_detail)
+            )
         }
 
         return ExecutionResult.Success(mapOf("success" to VBoolean(true)))
