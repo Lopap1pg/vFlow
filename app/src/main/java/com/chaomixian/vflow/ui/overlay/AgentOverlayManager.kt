@@ -124,7 +124,7 @@ class AgentOverlayManager(private val context: Context) {
         statusText = TextView(themedContext).apply {
             textSize = 13f
             setTextColor(Color.DKGRAY)
-            text = "AI 正在观察..."
+            text = context.getString(R.string.agent_overlay_status_observing)
             gravity = Gravity.CENTER
         }
 
@@ -133,7 +133,7 @@ class AgentOverlayManager(private val context: Context) {
             textSize = 16f
             setTextColor(Color.BLACK)
             typeface = Typeface.DEFAULT_BOLD
-            text = "准备就绪"
+            text = context.getString(R.string.agent_overlay_action_ready)
             gravity = Gravity.CENTER
             setPadding(0, 8, 0, 24)
         }
@@ -146,14 +146,14 @@ class AgentOverlayManager(private val context: Context) {
 
         // 暂停/继续按钮
         btnPause = MaterialButton(themedContext, null, com.google.android.material.R.attr.materialButtonOutlinedStyle).apply {
-            text = "暂停"
+            text = context.getString(R.string.agent_overlay_pause)
             setIconResource(R.drawable.rounded_pause_24)
             setOnClickListener { togglePause() }
         }
 
         // 取消按钮 (红色警告色)
         btnCancel = MaterialButton(themedContext, null, android.R.attr.borderlessButtonStyle).apply {
-            text = "结束"
+            text = context.getString(R.string.agent_overlay_end)
             setTextColor(Color.RED)
             //iconTint = android.content.res.ColorStateList.valueOf(Color.RED)
             setIconResource(R.drawable.rounded_close_small_24)
@@ -209,7 +209,7 @@ class AgentOverlayManager(private val context: Context) {
 
         // 检查是否取消
         if (isCancelled) {
-            throw CancellationException("用户手动停止了任务")
+            throw CancellationException(context.getString(R.string.agent_overlay_cancelled_by_user))
         }
     }
 
@@ -217,9 +217,9 @@ class AgentOverlayManager(private val context: Context) {
         if (isPaused) {
             //以此恢复
             isPaused = false
-            btnPause?.text = "暂停"
+            btnPause?.text = context.getString(R.string.agent_overlay_pause)
             btnPause?.setIconResource(R.drawable.rounded_pause_24)
-            actionText?.text = "任务继续..."
+            actionText?.text = context.getString(R.string.agent_overlay_task_continuing)
             borderView?.visibility = View.VISIBLE // 恢复边框
 
             // 解锁协程
@@ -228,10 +228,10 @@ class AgentOverlayManager(private val context: Context) {
         } else {
             //以此暂停
             isPaused = true
-            btnPause?.text = "继续"
+            btnPause?.text = context.getString(R.string.agent_overlay_continue)
             btnPause?.setIconResource(R.drawable.rounded_play_arrow_24)
-            actionText?.text = "已暂停 (您可以操作屏幕)"
-            statusText?.text = "等待用户指令..."
+            actionText?.text = context.getString(R.string.agent_overlay_paused)
+            statusText?.text = context.getString(R.string.agent_overlay_waiting)
             borderView?.visibility = View.INVISIBLE // 隐藏边框，方便用户看清屏幕
 
             // 创建锁
@@ -243,19 +243,19 @@ class AgentOverlayManager(private val context: Context) {
         if (isCancelConfirming) {
             // 确认取消
             isCancelled = true
-            actionText?.text = "正在停止..."
+            actionText?.text = context.getString(R.string.agent_overlay_stopping)
             // 如果当前是暂停状态，必须先解锁，让 Agent 协程能走到 awaitState 的检查逻辑
             pauseSignal?.complete(Unit)
             dismiss()
         } else {
             // 第一次点击，提示确认
             isCancelConfirming = true
-            btnCancel?.text = "确定?"
+            btnCancel?.text = context.getString(R.string.agent_overlay_confirm_end)
             // 3秒后如果没有确认，自动恢复
             controlRoot?.postDelayed({
                 if (!isCancelled) {
                     isCancelConfirming = false
-                    btnCancel?.text = "结束"
+                    btnCancel?.text = context.getString(R.string.agent_overlay_end)
                 }
             }, 3000)
         }
@@ -266,7 +266,10 @@ class AgentOverlayManager(private val context: Context) {
 
         controlRoot?.post {
             if (!thought.isNullOrBlank()) {
-                statusText?.text = "Thinking: ${thought.take(30)}..."
+                statusText?.text = context.getString(
+                    R.string.agent_overlay_thinking,
+                    thought.take(30)
+                )
             }
             if (!action.isNullOrBlank()) {
                 actionText?.text = action
