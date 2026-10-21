@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_workflow_not_found">工作流不存在</string>
+    <string name="tile_manual_trigger_required">此工作流不是手动触发器，无法通过 Tile 执行</string>
+    <string name="tile_executing_workflow">执行工作流: %1$s</string>
+    <string name="shortcut_image_selected">图片已选择</string>
+    <string name="shortcut_image_select_failed">图片选择失败: %1$s</string>
+    <string name="picker_local_directory_only">仅支持本地目录，请选择本地存储中的目录</string>
+</resources>
