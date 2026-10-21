@@ -166,7 +166,7 @@ class PickerHandler(
                 onUpdateParameters(mapOf(inputDef.id to value))
                 android.util.Log.d("PickerHandler", "目录选择成功: $value")
             } else {
-                Toast.makeText(activity, "仅支持本地目录，请选择本地存储中的目录", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.picker_local_directory_only, Toast.LENGTH_SHORT).show()
             }
         } else if (uri == null) {
             android.util.Log.d("PickerHandler", "目录选择已取消")
