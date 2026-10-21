@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="execution_ui_channel_name">Interactive requests</string>
+    <string name="execution_ui_channel_desc">Requests user interaction while a workflow is running</string>
+    <string name="execution_ui_input_notification_content">Tap here to enter %1$s</string>
+    <string name="execution_ui_quick_view_image_notification_content">Tap to view image</string>
+    <string name="execution_ui_select_image_title">Select Image</string>
+    <string name="execution_ui_select_image_content">Tap to select an image from your gallery</string>
+    <string name="execution_ui_select_workflow_title">Select Workflow</string>
+    <string name="execution_ui_select_workflow_content">Multiple workflows can handle this action. Select one.</string>
+    <string name="execution_ui_share_title">Share</string>
+    <string name="execution_ui_share_content">Tap to open the system share menu</string>
+    <string name="execution_ui_media_projection_title">Screenshot Permission Required</string>
+    <string name="execution_ui_media_projection_content">Tap to grant vFlow screenshot permission</string>
+</resources>
