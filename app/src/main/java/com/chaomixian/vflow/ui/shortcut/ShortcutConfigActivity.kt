@@ -158,10 +158,14 @@ class ShortcutConfigActivity : BaseActivity() {
             selectedIconRes = customImagePath
             iconAdapter.setCustomImage(customImagePath!!)
 
-            Toast.makeText(this, "图片已选择", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, R.string.shortcut_image_selected, Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "图片选择失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.shortcut_image_select_failed, e.message ?: ""),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
