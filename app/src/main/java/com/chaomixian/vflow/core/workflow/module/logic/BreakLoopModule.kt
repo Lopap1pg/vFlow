@@ -42,13 +42,17 @@ class BreakLoopModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        onProgress(ProgressUpdate("准备跳出循环..."))
+        val appContext = context.applicationContext
+        onProgress(ProgressUpdate(appContext.getString(R.string.logic_break_preparing)))
 
         // 使用 BlockNavigator
         val currentLoopPairingId = BlockNavigator.findCurrentLoopPairingId(context.allSteps, context.currentStepIndex)
         if (currentLoopPairingId == null) {
-            onProgress(ProgressUpdate("无法跳出：当前不在循环中。"))
-            return ExecutionResult.Failure("无效操作", "‘跳出循环’模块必须放置在循环块内。")
+            onProgress(ProgressUpdate(appContext.getString(R.string.logic_break_not_in_loop_progress)))
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.logic_invalid_operation_title),
+                appContext.getString(R.string.logic_break_must_be_in_loop)
+            )
         }
 
         return ExecutionResult.Signal(ExecutionSignal.Break)
