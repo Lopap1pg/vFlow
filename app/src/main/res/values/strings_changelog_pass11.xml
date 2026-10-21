@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog_title">版本历史</string>
+    <string name="changelog_back">返回</string>
+    <string name="changelog_load_failed">加载失败</string>
+    <string name="changelog_unknown_error">未知错误</string>
+    <string name="changelog_current_version">当前版本</string>
+    <string name="changelog_prerelease">预发布</string>
+    <string name="changelog_collapse">收起</string>
+    <string name="changelog_view_full">查看完整更新日志</string>
+    <string name="changelog_relative_today">今天</string>
+    <string name="changelog_relative_yesterday">昨天</string>
+    <string name="changelog_relative_days_ago">%1$d天前</string>
+    <string name="changelog_relative_months_ago">%1$d个月前</string>
+    <string name="changelog_relative_years_ago">%1$d年前</string>
+</resources>
