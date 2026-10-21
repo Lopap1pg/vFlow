@@ -23,7 +23,7 @@ object LocaleManager {
     /**
      * 应用支持的语言列表
      *
-     * Key: 语言代码（如 "zh", "en"）
+     * Key: 语言代码（如 "zh", "en", "ja"）
      * Value: 语言的显示名称（用于在设置界面显示）
      */
     val SUPPORTED_LANGUAGES = mapOf(
@@ -37,6 +37,7 @@ object LocaleManager {
      *
      * 如果用户没有手动设置过语言（首次启动），则根据系统语言自动选择：
      * - 系统语言是中文（简体/繁体）时使用 "zh"
+     * - 系统语言是日语时使用 "ja"
      * - 其他情况使用 "en"
      *
      * @param context Android上下文
@@ -51,10 +52,10 @@ object LocaleManager {
             savedLanguage
         } else {
             // 首次启动，根据系统语言自动选择
-            if (isSystemLanguageChinese()) {
-                "zh"
-            } else {
-                "en"
+            when {
+                Locale.getDefault().language == "ja" -> "ja"
+                isSystemLanguageChinese() -> "zh"
+                else -> "en"
             }
         }
     }
@@ -83,7 +84,7 @@ object LocaleManager {
      * 设置应用语言并持久化
      *
      * @param context Android上下文
-     * @param languageCode 语言代码（如 "zh", "en"）
+     * @param languageCode 语言代码（如 "zh", "en", "ja"）
      */
     fun setLanguage(context: Context, languageCode: String) {
         getPersistence(context).edit().putString(KEY_LANGUAGE, languageCode).apply()
