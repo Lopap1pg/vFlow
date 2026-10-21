@@ -161,16 +161,16 @@ class LocationRangeCheckModule : BaseModule() {
 
     override fun validate(step: ActionStep, allSteps: List<ActionStep>): ValidationResult {
         val latitude = (step.parameters["latitude"] as? Number)?.toDouble()
-            ?: return ValidationResult(false, "纬度必须是数字")
+            ?: return ValidationResult(false, appContext.getString(R.string.location_range_latitude_must_be_number))
         val longitude = (step.parameters["longitude"] as? Number)?.toDouble()
-            ?: return ValidationResult(false, "经度必须是数字")
+            ?: return ValidationResult(false, appContext.getString(R.string.location_range_longitude_must_be_number))
         val radius = (step.parameters["radius"] as? Number)?.toDouble()
-            ?: return ValidationResult(false, "半径必须是数字")
+            ?: return ValidationResult(false, appContext.getString(R.string.location_range_radius_must_be_number))
 
         return when {
-            latitude !in -90.0..90.0 -> ValidationResult(false, "纬度必须在 -90 到 90 之间")
-            longitude !in -180.0..180.0 -> ValidationResult(false, "经度必须在 -180 到 180 之间")
-            radius < 0.0 -> ValidationResult(false, "半径不能小于 0")
+            latitude !in -90.0..90.0 -> ValidationResult(false, appContext.getString(R.string.location_range_latitude_out_of_range))
+            longitude !in -180.0..180.0 -> ValidationResult(false, appContext.getString(R.string.location_range_longitude_out_of_range))
+            radius < 0.0 -> ValidationResult(false, appContext.getString(R.string.location_range_radius_negative))
             else -> ValidationResult(true)
         }
     }
@@ -205,31 +205,50 @@ class LocationRangeCheckModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val targetLatitude = context.getVariableAsNumber("latitude") ?: DEFAULT_LATITUDE
         val targetLongitude = context.getVariableAsNumber("longitude") ?: DEFAULT_LONGITUDE
         val radiusMeters = context.getVariableAsNumber("radius") ?: DEFAULT_RADIUS_METERS
 
         if (targetLatitude !in -90.0..90.0) {
-            return ExecutionResult.Failure("参数错误", "纬度必须在 -90 到 90 之间")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.location_range_parameter_error_title),
+                appContext.getString(R.string.location_range_latitude_out_of_range)
+            )
         }
         if (targetLongitude !in -180.0..180.0) {
-            return ExecutionResult.Failure("参数错误", "经度必须在 -180 到 180 之间")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.location_range_parameter_error_title),
+                appContext.getString(R.string.location_range_longitude_out_of_range)
+            )
         }
         if (radiusMeters < 0.0) {
-            return ExecutionResult.Failure("参数错误", "半径不能小于 0")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.location_range_parameter_error_title),
+                appContext.getString(R.string.location_range_radius_negative)
+            )
         }
 
         if (!hasLocationPermission(appContext)) {
-            return ExecutionResult.Failure("权限不足", "未授予定位权限")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.location_range_permission_denied_title),
+                appContext.getString(R.string.location_range_permission_denied_detail)
+            )
         }
 
-        onProgress(ProgressUpdate("正在获取当前位置"))
+        onProgress(ProgressUpdate(appContext.getString(R.string.location_range_fetching_current)))
 
         val locationManager = appContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-            ?: return ExecutionResult.Failure("定位失败", "无法获取定位服务")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.location_range_fetch_failed_title),
+                appContext.getString(R.string.location_range_service_unavailable)
+            )
 
         val currentLocation = getBestLocation(locationManager)
-            ?: return ExecutionResult.Failure("定位失败", "无法获取当前位置，请确认定位服务已开启")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.location_range_fetch_failed_title),
+                appContext.getString(R.string.location_range_current_unavailable)
+            )
 
         val distanceMeters = LocationRangeMath.distanceMeters(
             startLatitude = currentLocation.latitude,
@@ -241,7 +260,11 @@ class LocationRangeCheckModule : BaseModule() {
 
         onProgress(
             ProgressUpdate(
-                if (inside) "当前位置在设定范围内" else "当前位置不在设定范围内"
+                if (inside) {
+                    appContext.getString(R.string.location_range_inside)
+                } else {
+                    appContext.getString(R.string.location_range_outside)
+                }
             )
         )
 

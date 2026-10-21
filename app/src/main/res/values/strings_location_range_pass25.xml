@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="location_range_latitude_must_be_number">纬度必须是数字</string>
+    <string name="location_range_longitude_must_be_number">经度必须是数字</string>
+    <string name="location_range_radius_must_be_number">半径必须是数字</string>
+    <string name="location_range_latitude_out_of_range">纬度必须在 -90 到 90 之间</string>
+    <string name="location_range_longitude_out_of_range">经度必须在 -180 到 180 之间</string>
+    <string name="location_range_radius_negative">半径不能小于 0</string>
+    <string name="location_range_parameter_error_title">参数错误</string>
+    <string name="location_range_permission_denied_title">权限不足</string>
+    <string name="location_range_permission_denied_detail">未授予定位权限</string>
+    <string name="location_range_fetching_current">正在获取当前位置</string>
+    <string name="location_range_fetch_failed_title">定位失败</string>
+    <string name="location_range_service_unavailable">无法获取定位服务</string>
+    <string name="location_range_current_unavailable">无法获取当前位置，请确认定位服务已开启</string>
+    <string name="location_range_inside">当前位置在设定范围内</string>
+    <string name="location_range_outside">当前位置不在设定范围内</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="location_range_latitude_must_be_number">Latitude must be a number</string>
+    <string name="location_range_longitude_must_be_number">Longitude must be a number</string>
+    <string name="location_range_radius_must_be_number">Radius must be a number</string>
+    <string name="location_range_latitude_out_of_range">Latitude must be between -90 and 90</string>
+    <string name="location_range_longitude_out_of_range">Longitude must be between -180 and 180</string>
+    <string name="location_range_radius_negative">Radius cannot be less than 0</string>
+    <string name="location_range_parameter_error_title">Parameter error</string>
+    <string name="location_range_permission_denied_title">Permission denied</string>
+    <string name="location_range_permission_denied_detail">Location permission has not been granted</string>
+    <string name="location_range_fetching_current">Getting current location...</string>
+    <string name="location_range_fetch_failed_title">Location failed</string>
+    <string name="location_range_service_unavailable">Unable to access the location service</string>
+    <string name="location_range_current_unavailable">Unable to get the current location. Make sure location services are enabled.</string>
+    <string name="location_range_inside">Current location is within the configured range</string>
+    <string name="location_range_outside">Current location is outside the configured range</string>
+</resources>
