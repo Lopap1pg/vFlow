@@ -6,11 +6,9 @@ import android.content.Context
 import com.chaomixian.vflow.R
 import com.chaomixian.vflow.core.execution.ExecutionContext
 import com.chaomixian.vflow.core.module.*
-import com.chaomixian.vflow.core.types.VObject
 import com.chaomixian.vflow.core.types.VTypeRegistry
 import com.chaomixian.vflow.core.types.basic.VBoolean
 import com.chaomixian.vflow.core.types.basic.VNull
-import com.chaomixian.vflow.core.types.basic.VString
 import com.chaomixian.vflow.core.types.complex.VImage
 import com.chaomixian.vflow.core.workflow.model.ActionStep
 import com.chaomixian.vflow.services.ExecutionUIService
@@ -28,7 +26,7 @@ class ShareModule : BaseModule() {
         descriptionStringRes = R.string.module_vflow_system_share_desc,
         name = "分享",  // Fallback
         description = "调用系统分享功能来分享文本或图片。",  // Fallback
-        iconRes = R.drawable.rounded_ios_share_24, // 使用新图标
+        iconRes = R.drawable.rounded_ios_share_24,
         category = "应用与系统",
         categoryId = "device"
     )
@@ -43,27 +41,22 @@ class ShareModule : BaseModule() {
         requiredInputIds = setOf("content")
     )
 
-    // 定义输入参数
     override fun getInputs(): List<InputDefinition> = listOf(
         InputDefinition(
             id = "content",
             nameStringRes = R.string.param_vflow_system_share_content_name,
-            name = "分享内容",  // Fallback
+            name = "分享内容",
             staticType = ParameterType.ANY,
             defaultValue = "",
             acceptsMagicVariable = true,
-            acceptedMagicVariableTypes = setOf(VTypeRegistry.STRING.id, VTypeRegistry.IMAGE.id), // 接受文本和图片
-            supportsRichText = true  // 支持混合变量
+            acceptedMagicVariableTypes = setOf(VTypeRegistry.STRING.id, VTypeRegistry.IMAGE.id),
+            supportsRichText = true
         )
     )
 
-    /**
-     * 增加 success 输出以保持统一。
-     */
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
         OutputDefinition("success", "是否成功", VTypeRegistry.BOOLEAN.id, nameStringRes = R.string.output_vflow_system_share_success_name)
     )
-
 
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
         val contentPill = PillUtil.createPillFromParam(
@@ -73,48 +66,44 @@ class ShareModule : BaseModule() {
         return PillUtil.buildSpannable(context, context.getString(R.string.summary_vflow_system_share_prefix), contentPill)
     }
 
-    /**
-     * 执行分享操作。
-     * 现在会输出一个布尔值表示操作是否成功启动。
-     */
     override suspend fun execute(
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 获取UI服务
+        val appContext = context.applicationContext
         val uiService = context.services.get(ExecutionUIService::class)
-            ?: return ExecutionResult.Failure("服务缺失", "无法获取UI服务来执行分享操作。")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_share_service_missing),
+                appContext.getString(R.string.error_vflow_system_share_cannot_get_ui)
+            )
 
-        // 获取内容变量
         val rawContent = context.getVariable("content")
-
-        // 处理不同类型的内容
         val content: Any? = when (rawContent) {
-            is VImage -> rawContent  // 图片变量直接使用，不解析
-            is VNull -> null  // 空内容
+            is VImage -> rawContent
+            is VNull -> null
             else -> {
-                // 其他类型使用统一的变量访问方法获取字符串
                 val strValue = context.getVariableAsString("content")
                 if (strValue.isEmpty()) null else strValue
             }
         }
 
         if (content == null) {
-            return ExecutionResult.Failure("内容为空", "没有可分享的内容。")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_share_empty),
+                appContext.getString(R.string.error_vflow_system_share_no_content)
+            )
         }
 
-        onProgress(ProgressUpdate("正在准备分享..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_share_preparing)))
 
-        // 调用UI服务发起分享请求，并等待其完成
         val success = uiService.requestShare(content)
 
         if (success == true) {
-            onProgress(ProgressUpdate("分享窗口已弹出"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_share_sent)))
         } else {
-            onProgress(ProgressUpdate("分享操作未能成功启动或被取消"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_share_failed)))
         }
 
-        // 无论成功与否，都通过 success 输出返回结果
         return ExecutionResult.Success(mapOf("success" to VBoolean(success ?: false)))
     }
 }
