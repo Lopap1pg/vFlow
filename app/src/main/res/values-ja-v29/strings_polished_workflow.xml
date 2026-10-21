@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="repo_author">作者: %s</string>
+    <string name="repo_module_permissions_count">権限: %d 件</string>
+    <string name="overlay_ui_quick_view_truncated">[内容が長いため省略しました。全%2$d文字のうち先頭%1$d文字を表示しています]</string>
+    <string name="overlay_ui_input_time_title">時刻を選択</string>
+    <string name="overlay_ui_input_date_title">日付を選択</string>
+    <string name="overlay_ui_input_text_title">入力</string>
+    <string name="overlay_ui_share_no_content">共有できる内容がありません</string>
+    <string name="overlay_ui_share_chooser_title">コンテンツを共有</string>
+    <string name="overlay_ui_clip_label_image">vFlow画像</string>
+    <string name="overlay_ui_workflow_chooser_title">実行するワークフローを選択</string>
+    <string name="overlay_ui_speech_notification_content">タップして音声入力を開始</string>
+    <string name="overlay_ui_speech_default_title">音声入力</string>
+    <string name="overlay_ui_speech_placeholder">下のボタンを長押しして話してください</string>
+    <string name="overlay_ui_speech_status_idle">長押しで録音を開始し、離すと停止します。</string>
+    <string name="overlay_ui_speech_status_idle_offline">オフライン認識: 長押しで録音を開始し、離すと停止します。</string>
+    <string name="overlay_ui_speech_status_recording">聞き取り中です。そのまま話してください…</string>
+    <string name="overlay_ui_speech_status_processing">音声を認識しています…</string>
+    <string name="overlay_ui_speech_status_ready">認識が完了しました。続けて入力する場合は再度長押しするか、このまま送信してください。</string>
+    <string name="overlay_ui_speech_status_no_match">音声を認識できませんでした。長押しして再試行してください。</string>
+    <string name="overlay_ui_speech_status_switched_offline">オンライン認識に失敗したため、オフライン認識へ切り替えました。もう一度お試しください。</string>
+    <string name="overlay_ui_speech_button_hold">長押しして話す</string>
+    <string name="overlay_ui_speech_button_release">離して停止</string>
+    <string name="overlay_ui_speech_not_available">この端末では音声認識を利用できません</string>
+    <string name="overlay_ui_sherpa_model_missing">ローカルのSherpa-ncnnモデルがインストールされていません。「設定 → モジュール設定 → Sherpa音声モデル」からモデルをダウンロードまたはインポートして、再試行してください。</string>
+    <string name="overlay_ui_speech_permission_denied">マイクの権限がありません</string>
+    <string name="overlay_ui_speech_error_audio">録音に失敗しました。マイクへのアクセスを確認してください。</string>
+    <string name="overlay_ui_speech_error_network">ネットワークエラーにより音声認識に失敗しました。</string>
+    <string name="overlay_ui_speech_error_server">音声認識サービスでエラーが発生しました</string>
+    <string name="overlay_ui_speech_error_timeout">音声認識がタイムアウトしました。もう一度お試しください。</string>
+    <string name="overlay_ui_speech_offline_pack_missing_title">オフライン音声パックがありません</string>
+    <string name="overlay_ui_speech_offline_pack_missing_message">選択中の言語用オフライン音声パックがインストールされていません。システムの音声設定からダウンロードして再試行してください。</string>
+
+    <string name="pose_trigger_gravity_not_recorded">重力データがまだ記録されていません。有効化後に再記録してください。</string>
+    <string name="pose_trigger_record_instructions">記録画面を開き、音量キーを1回押して記録を開始し、もう一度押して終了します。</string>
+    <string name="pose_trigger_match_threshold_value">一致度 %1$d%% 以上で判定</string>
+    <string name="pose_trigger_include_gravity_acceleration_hint">初期状態では無効です。有効にすると3軸の重力ベクトルも記録・照合するため、姿勢の再記録を推奨します。</string>
+    <string name="pose_trigger_record_title">姿勢を記録</string>
+    <string name="pose_trigger_record_status_ready">記録準備完了</string>
+    <string name="pose_trigger_record_status_recording">記録中</string>
+    <string name="pose_trigger_record_hint_start">端末を対象の姿勢にして、音量キーを1回押すとサンプリングを開始します。</string>
+    <string name="pose_trigger_record_hint_stop">端末を安定させたまま、もう一度音量キーを押すと記録を終了し、平均姿勢を保存します。</string>
+    <string name="pose_trigger_record_sample_count">%1$d サンプル取得</string>
+    <string name="pose_trigger_record_tip" formatted="false">目安: しきい値が高いほど判定は厳密になります。安定した姿勢は90%前後、手持ちでのトリガーは80%前後が適しています。</string>
+    <string name="pose_trigger_record_empty">姿勢データを取得できませんでした。もう一度お試しください。</string>
+    <string name="pose_trigger_gravity_record_empty">重力データを取得できませんでした。もう一度お試しください。</string>
+
+    <string name="text_no_workflows">利用可能なワークフローはありません</string>
+    <string name="dialog_download_workflow_title">ワークフローをダウンロード</string>
+    <string name="dialog_download_workflow_message" formatted="false">「%s」をダウンロードしますか？\n\n%s</string>
+    <string name="toast_download_workflow_success">ダウンロードしました: %s</string>
+    <string name="toast_workflow_downloaded_as_copy">「%s」をコピーとしてダウンロードしました</string>
+    <string name="dialog_workflow_conflict_title">ワークフローの競合</string>
+    <string name="dialog_workflow_conflict_message" formatted="false">「%s」というワークフローがすでに存在します（ID: %s...）。リポジトリの「%s」をどう処理しますか？</string>
+    <string name="label_workflow_from_repo">（リポジトリ）</string>
+
+    <string name="editor_edit_parameter">%s を編集</string>
+    <string name="editor_error_policy_stop">エラー時: ワークフローを停止（既定）</string>
+    <string name="editor_error_policy_skip">エラー時: このステップをスキップして続行</string>
+    <string name="editor_error_policy_retry">エラー時: 再試行</string>
+    <string name="editor_retry_times">回</string>
+    <string name="editor_retry_interval">再試行間隔（ms）</string>
+    <string name="editor_more_settings">その他の設定</string>
+    <string name="ai_generate">AIで生成</string>
+    <string name="editor_more_ai_generate">AIで生成</string>
+    <string name="editor_more_ui_inspector">UIインスペクター</string>
+    <string name="add_workflow">ワークフローを追加</string>
+
+    <string name="workflow_more_metadata">その他のメタデータ</string>
+    <string name="workflow_not_exists">（ワークフローが存在しません）</string>
+    <string name="workflow_version">バージョン</string>
+    <string name="workflow_tags_hint">タグ</string>
+    <string name="workflow_tags_helper">複数のタグはカンマで区切ります</string>
+    <string name="metadata_saved">メタデータを保存しました</string>
+    <string name="metadata_updated_pending_save">メタデータを更新しました。反映するにはワークフローを保存してください。</string>
+    <string name="workflow_config">ワークフロー設定</string>
+    <string name="workflow_card_preview">カードプレビュー</string>
+    <string name="workflow_theme_color_value">現在のテーマカラー: %1$s</string>
+    <string name="workflow_reentry_behavior_title">実行中に再度トリガーされた場合</string>
+    <string name="workflow_reentry_behavior_description">同じワークフローが実行中に再度トリガーされた場合の動作を選択します</string>
+    <string name="workflow_reentry_behavior_block_new">新しい実行をブロック</string>
+    <string name="workflow_reentry_behavior_stop_current_and_run_new">現在の実行を停止して再実行</string>
+    <string name="workflow_reentry_behavior_allow_parallel">並列実行を許可</string>
+    <string name="workflow_max_execution_time_enabled">最大実行時間を制限</string>
+    <string name="workflow_max_execution_time_value">%d 秒</string>
+    <string name="copied_to_clipboard">クリップボードにコピーしました</string>
+    <string name="install_module">モジュールをインストール</string>
+    <string name="module_author_version" formatted="false">作者: %s   バージョン: v%s</string>
+    <string name="error_backup_format_invalid">バックアップファイルの形式が正しくありません</string>
+    <string name="error_single_workflow_format_invalid">ワークフローファイルの形式が正しくありません</string>
+</resources>
