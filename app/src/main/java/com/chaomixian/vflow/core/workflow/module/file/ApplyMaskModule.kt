@@ -56,6 +56,7 @@ class ApplyMaskModule : BaseModule() {
             defaultValue = MASK_SHAPE_ROUNDED_RECT,
             options = maskOptions,
             acceptsMagicVariable = false,
+            nameStringRes = R.string.param_vflow_file_apply_mask_shape_name,
             optionsStringRes = listOf(R.string.option_vflow_file_apply_mask_shape_rounded_rect),
             legacyValueMap = mapOf(
                 "圆角矩形" to MASK_SHAPE_ROUNDED_RECT
@@ -64,7 +65,12 @@ class ApplyMaskModule : BaseModule() {
     )
 
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
-        OutputDefinition("image", "处理后的图像", VTypeRegistry.IMAGE.id)
+        OutputDefinition(
+            "image",
+            "处理后的图像",
+            VTypeRegistry.IMAGE.id,
+            nameStringRes = R.string.output_vflow_file_apply_mask_image_name
+        )
     )
 
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
@@ -93,11 +99,14 @@ class ApplyMaskModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        val imageVar = context.getVariableAsImage("image")
-            ?: return ExecutionResult.Failure("参数错误", "需要一个图像变量作为输入。")
-
         val appContext = context.applicationContext
-        onProgress(ProgressUpdate("正在加载图像..."))
+        val imageVar = context.getVariableAsImage("image")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.image_processing_param_error_title),
+                appContext.getString(R.string.image_processing_image_input_required)
+            )
+
+        onProgress(ProgressUpdate(appContext.getString(R.string.image_processing_loading)))
 
         return try {
             val request = ImageRequest.Builder(appContext)
@@ -106,15 +115,18 @@ class ApplyMaskModule : BaseModule() {
                 .build()
             val result = Coil.imageLoader(appContext).execute(request)
             val originalBitmap = result.drawable?.toBitmap()
-                ?: return ExecutionResult.Failure("图像加载失败", "无法从 URI 加载位图: ${imageVar.uriString}")
+                ?: return ExecutionResult.Failure(
+                    appContext.getString(R.string.image_processing_load_failed_title),
+                    appContext.getString(R.string.image_processing_load_failed_uri, imageVar.uriString)
+                )
 
             val softwareBitmap = toSoftwareBitmap(originalBitmap)
 
-            onProgress(ProgressUpdate("正在应用圆角蒙版..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.image_processing_applying_rounded_mask)))
 
             val maskedBitmap = createRoundedBitmap(softwareBitmap)
 
-            onProgress(ProgressUpdate("正在保存处理后的图像..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.image_processing_saving)))
             // 使用 workDir
             val outputFile = File(context.workDir, "masked_${UUID.randomUUID()}.png")
             FileOutputStream(outputFile).use {
@@ -131,7 +143,10 @@ class ApplyMaskModule : BaseModule() {
             ExecutionResult.Success(mapOf("image" to VImage(outputUri)))
 
         } catch (e: Exception) {
-            ExecutionResult.Failure("图像处理异常", e.localizedMessage ?: "发生未知错误")
+            ExecutionResult.Failure(
+                appContext.getString(R.string.image_processing_exception_title),
+                e.localizedMessage ?: appContext.getString(R.string.image_processing_unknown_error)
+            )
         }
     }
 

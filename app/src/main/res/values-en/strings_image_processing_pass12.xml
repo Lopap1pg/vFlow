@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="image_processing_param_error_title">Parameter error</string>
+    <string name="image_processing_image_input_required">An image variable is required as input.</string>
+    <string name="image_processing_loading">Loading image...</string>
+    <string name="image_processing_load_failed_title">Image load failed</string>
+    <string name="image_processing_load_failed_uri">Failed to load bitmap from URI: %1$s</string>
+    <string name="image_processing_rotating">Rotating image...</string>
+    <string name="image_processing_applying_rounded_mask">Applying rounded mask...</string>
+    <string name="image_processing_saving">Saving processed image...</string>
+    <string name="image_processing_exception_title">Image processing error</string>
+    <string name="image_processing_unknown_error">An unknown error occurred</string>
+    <string name="param_vflow_file_apply_mask_shape_name">Mask shape</string>
+    <string name="output_vflow_file_apply_mask_image_name">Processed image</string>
+</resources>
