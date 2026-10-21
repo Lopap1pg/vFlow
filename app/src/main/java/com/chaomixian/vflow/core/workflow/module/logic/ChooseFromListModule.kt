@@ -66,18 +66,41 @@ class ChooseFromListModule : BaseModule() {
     }
 
     override suspend fun execute(context: ExecutionContext, onProgress: suspend (ProgressUpdate) -> Unit): ExecutionResult {
+        val appContext = context.applicationContext
         val items = (context.getVariable("items") as? VList)?.raw
-            ?: return ExecutionResult.Failure("列表无效", "请选择一个列表变量作为输入")
-        if (items.isEmpty()) return ExecutionResult.Failure("列表为空", "没有可选择的项目")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.choose_list_invalid_title),
+                appContext.getString(R.string.choose_list_invalid_detail)
+            )
+        if (items.isEmpty()) {
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.choose_list_empty_title),
+                appContext.getString(R.string.choose_list_empty_detail)
+            )
+        }
         val uiService = context.services.get(ExecutionUIService::class)
-            ?: return ExecutionResult.Failure("服务缺失", "无法显示列表")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.choose_list_service_missing_title),
+                appContext.getString(R.string.choose_list_service_missing_detail)
+            )
+
+        val rawPrompt = context.getVariableAsString("prompt", "")
+        val prompt = rawPrompt.takeUnless { it.isBlank() || it == "请选择" }
+            ?: appContext.getString(R.string.choose_list_default_prompt)
+
         val selectedIndex = uiService.requestMenuChoice(
-            context.getVariableAsString("prompt", "请选择"),
+            prompt,
             items.map { it.asString() }
-        ) ?: return ExecutionResult.Failure("已取消选择", "用户取消了列表选择")
+        ) ?: return ExecutionResult.Failure(
+            appContext.getString(R.string.choose_list_cancelled_title),
+            appContext.getString(R.string.choose_list_cancelled_detail)
+        )
         val selectedItem = items.getOrNull(selectedIndex)
-            ?: return ExecutionResult.Failure("选择无效", "未找到所选项目")
-        onProgress(ProgressUpdate("已选择: ${selectedItem.asString()}"))
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.choose_list_selection_invalid_title),
+                appContext.getString(R.string.choose_list_selection_invalid_detail)
+            )
+        onProgress(ProgressUpdate(appContext.getString(R.string.choose_list_selected, selectedItem.asString())))
         return ExecutionResult.Success(
             mapOf(
                 "selected_item" to selectedItem,
