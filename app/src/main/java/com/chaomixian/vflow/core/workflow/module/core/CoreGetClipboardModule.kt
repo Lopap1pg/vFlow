@@ -15,17 +15,13 @@ import kotlinx.coroutines.withContext
 import com.chaomixian.vflow.permissions.Permission
 import com.chaomixian.vflow.permissions.PermissionManager
 
-/**
- * 读取剪贴板模块（Beta）。
- * 使用 vFlow Core 读取剪贴板内容。
- */
 class CoreGetClipboardModule : BaseModule() {
 
     override val id = "vflow.core.get_clipboard"
     override val metadata = ActionMetadata(
-        name = "读取剪贴板",  // Fallback
+        name = "读取剪贴板",
         nameStringRes = R.string.module_vflow_core_get_clipboard_name,
-        description = "使用 vFlow Core 读取剪贴板内容。",  // Fallback
+        description = "使用 vFlow Core 读取剪贴板内容。",
         descriptionStringRes = R.string.module_vflow_core_get_clipboard_desc,
         iconRes = R.drawable.rounded_content_paste_24,
         category = "Core (Beta)",
@@ -37,10 +33,7 @@ class CoreGetClipboardModule : BaseModule() {
         workflowStepDescription = "Read clipboard text through vFlow Core.",
     )
 
-    override fun getRequiredPermissions(step: ActionStep?): List<Permission> {
-        return listOf(PermissionManager.CORE)
-    }
-
+    override fun getRequiredPermissions(step: ActionStep?): List<Permission> = listOf(PermissionManager.CORE)
     override fun getInputs(): List<InputDefinition> = emptyList()
 
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
@@ -56,22 +49,19 @@ class CoreGetClipboardModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 1. 确保 Core 连接
-        val connected = withContext(Dispatchers.IO) {
-            VFlowCoreBridge.connect(context.applicationContext)
-        }
+        val appContext = context.applicationContext
+        val connected = withContext(Dispatchers.IO) { VFlowCoreBridge.connect(appContext) }
         if (!connected) {
             return ExecutionResult.Failure(
-                "Core 未连接",
-                "vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。"
+                appContext.getString(R.string.core_runtime_not_connected_title),
+                appContext.getString(R.string.core_runtime_not_connected_detail)
             )
         }
 
-        // 2. 执行操作
-        onProgress(ProgressUpdate("正在使用 vFlow Core 读取剪贴板..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_core_get_clipboard_reading)))
         val text = VFlowCoreBridge.getClipboard()
 
-        onProgress(ProgressUpdate("剪贴板内容: $text"))
+        onProgress(ProgressUpdate(appContext.getString(R.string.core_clipboard_result, text)))
         return ExecutionResult.Success(mapOf(
             "success" to VBoolean(true),
             "text" to VString(text)
