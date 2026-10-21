@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="shell_command_parameter_error_title">Parameter error</string>
+    <string name="shell_command_executing">Executing via %1$s: %2$s</string>
+</resources>
