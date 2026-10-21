@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loop_validation_invalid_number_format">无效的数字格式</string>
+    <string name="loop_validation_count_positive">循环次数必须大于 0</string>
+    <string name="loop_parameter_error_title">参数错误</string>
+    <string name="loop_count_parse_failed">无法将“%1$s”解析为有效的循环次数</string>
+    <string name="loop_count_required">循环次数不能为空</string>
+    <string name="loop_count_must_be_number">循环次数必须是有效的数字</string>
+    <string name="loop_started">循环开始，总次数: %1$d</string>
+    <string name="loop_execution_error_title">执行错误</string>
+    <string name="loop_end_not_in_loop">结束循环模块不在“循环”块内。</string>
+    <string name="loop_iteration_finished">循环迭代结束，当前是第 %1$d 次</string>
+    <string name="bluetooth_parameter_error_title">参数错误</string>
+    <string name="bluetooth_shell_attempt">正在尝试通过 Shell 执行...</string>
+</resources>

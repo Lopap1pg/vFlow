@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loop_validation_invalid_number_format">無効な数値形式です</string>
+    <string name="loop_validation_count_positive">ループ回数は1以上にしてください</string>
+    <string name="loop_parameter_error_title">パラメータエラー</string>
+    <string name="loop_count_parse_failed">「%1$s」を有効なループ回数として解析できません</string>
+    <string name="loop_count_required">ループ回数を指定してください</string>
+    <string name="loop_count_must_be_number">ループ回数には有効な数値を指定してください</string>
+    <string name="loop_started">ループを開始します（合計: %1$d回）</string>
+    <string name="loop_execution_error_title">実行エラー</string>
+    <string name="loop_end_not_in_loop">「ループ終了」モジュールが「ループ」ブロック内にありません。</string>
+    <string name="loop_iteration_finished">ループの%1$d回目が終了しました</string>
+    <string name="bluetooth_parameter_error_title">パラメータエラー</string>
+    <string name="bluetooth_shell_attempt">Shell経由で実行しています...</string>
+</resources>
