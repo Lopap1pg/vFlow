@@ -40,7 +40,11 @@ class ContinueLoopModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        onProgress(ProgressUpdate("正在继续下一次循环..."))
+        onProgress(
+            ProgressUpdate(
+                context.applicationContext.getString(R.string.logic_continue_next_iteration)
+            )
+        )
         // 发出 Continue 信号，由执行器处理
         return ExecutionResult.Signal(ExecutionSignal.Continue)
     }

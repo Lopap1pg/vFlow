@@ -93,38 +93,57 @@ class StopWorkflowModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val targetInput = getInputs().first { it.id == "target" }
         val rawTarget = context.getVariableAsString("target", TARGET_CURRENT)
         val target = targetInput.normalizeEnumValue(rawTarget) ?: rawTarget
 
         return when (target) {
             TARGET_CURRENT -> {
-                onProgress(ProgressUpdate("正在停止当前工作流..."))
+                onProgress(ProgressUpdate(appContext.getString(R.string.logic_stop_current_workflow)))
                 // 发出 Stop 信号，由执行器处理
                 ExecutionResult.Signal(ExecutionSignal.Stop)
             }
             TARGET_OTHER -> {
                 val workflowId = context.getVariableAsString("workflow_id")
                 if (workflowId.isNullOrBlank()) {
-                    return ExecutionResult.Failure("参数错误", "未指定要停止的工作流ID")
+                    return ExecutionResult.Failure(
+                        appContext.getString(R.string.logic_parameter_error_title),
+                        appContext.getString(R.string.logic_stop_workflow_id_required)
+                    )
                 }
 
-                onProgress(ProgressUpdate("正在停止工作流: $workflowId"))
+                onProgress(
+                    ProgressUpdate(
+                        appContext.getString(R.string.logic_stop_workflow_progress, workflowId)
+                    )
+                )
 
                 // 检查目标工作流是否正在运行
                 if (!WorkflowExecutor.isRunning(workflowId)) {
                     // 目标工作流未运行，但这可能不是错误，只是没有操作
-                    onProgress(ProgressUpdate("工作流 '$workflowId' 未在运行"))
+                    onProgress(
+                        ProgressUpdate(
+                            appContext.getString(R.string.logic_stop_workflow_not_running, workflowId)
+                        )
+                    )
                     return ExecutionResult.Success()
                 }
 
                 // 停止指定的工作流
                 WorkflowExecutor.stopExecution(workflowId)
-                onProgress(ProgressUpdate("已停止工作流: $workflowId"))
+                onProgress(
+                    ProgressUpdate(
+                        appContext.getString(R.string.logic_stop_workflow_done, workflowId)
+                    )
+                )
                 ExecutionResult.Success()
             }
             else -> {
-                ExecutionResult.Failure("参数错误", "未知的目标类型: $target")
+                ExecutionResult.Failure(
+                    appContext.getString(R.string.logic_parameter_error_title),
+                    appContext.getString(R.string.logic_stop_unknown_target, target)
+                )
             }
         }
     }

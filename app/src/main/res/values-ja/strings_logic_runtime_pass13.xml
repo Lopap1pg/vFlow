@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logic_break_preparing">ループを抜ける準備をしています...</string>
+    <string name="logic_break_not_in_loop_progress">ループを抜けられません。現在のステップはループ内にありません。</string>
+    <string name="logic_invalid_operation_title">無効な操作</string>
+    <string name="logic_break_must_be_in_loop">「ループを抜ける」モジュールはループブロック内に配置する必要があります。</string>
+    <string name="logic_continue_next_iteration">次のループ処理へ進みます...</string>
+    <string name="logic_stop_current_workflow">現在のワークフローを停止しています...</string>
+    <string name="logic_parameter_error_title">パラメータエラー</string>
+    <string name="logic_stop_workflow_id_required">停止するワークフローIDが指定されていません。</string>
+    <string name="logic_stop_workflow_progress">ワークフローを停止しています: %1$s</string>
+    <string name="logic_stop_workflow_not_running">ワークフロー「%1$s」は実行されていません。</string>
+    <string name="logic_stop_workflow_done">ワークフローを停止しました: %1$s</string>
+    <string name="logic_stop_unknown_target">不明な対象タイプ: %1$s</string>
+</resources>

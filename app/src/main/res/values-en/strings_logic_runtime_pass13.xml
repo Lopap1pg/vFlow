@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="logic_break_preparing">Preparing to exit the loop...</string>
+    <string name="logic_break_not_in_loop_progress">Cannot exit: the current step is not inside a loop.</string>
+    <string name="logic_invalid_operation_title">Invalid operation</string>
+    <string name="logic_break_must_be_in_loop">The “Break Loop” module must be placed inside a loop block.</string>
+    <string name="logic_continue_next_iteration">Continuing with the next loop iteration...</string>
+    <string name="logic_stop_current_workflow">Stopping the current workflow...</string>
+    <string name="logic_parameter_error_title">Parameter error</string>
+    <string name="logic_stop_workflow_id_required">No workflow ID was specified.</string>
+    <string name="logic_stop_workflow_progress">Stopping workflow: %1$s</string>
+    <string name="logic_stop_workflow_not_running">Workflow “%1$s” is not running.</string>
+    <string name="logic_stop_workflow_done">Stopped workflow: %1$s</string>
+    <string name="logic_stop_unknown_target">Unknown target type: %1$s</string>
+</resources>
