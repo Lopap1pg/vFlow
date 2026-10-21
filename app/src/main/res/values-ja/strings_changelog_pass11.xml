@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog_title">バージョン履歴</string>
+    <string name="changelog_back">戻る</string>
+    <string name="changelog_load_failed">読み込みに失敗しました</string>
+    <string name="changelog_unknown_error">不明なエラー</string>
+    <string name="changelog_current_version">現在のバージョン</string>
+    <string name="changelog_prerelease">プレリリース</string>
+    <string name="changelog_collapse">折りたたむ</string>
+    <string name="changelog_view_full">更新履歴をすべて表示</string>
+    <string name="changelog_relative_today">今日</string>
+    <string name="changelog_relative_yesterday">昨日</string>
+    <string name="changelog_relative_days_ago">%1$d日前</string>
+    <string name="changelog_relative_months_ago">%1$dか月前</string>
+    <string name="changelog_relative_years_ago">%1$d年前</string>
+</resources>
