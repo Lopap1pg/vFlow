@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="image_processing_param_error_title">パラメータエラー</string>
+    <string name="image_processing_image_input_required">入力には画像変数が必要です。</string>
+    <string name="image_processing_loading">画像を読み込んでいます...</string>
+    <string name="image_processing_load_failed_title">画像の読み込みに失敗しました</string>
+    <string name="image_processing_load_failed_uri">URIからビットマップを読み込めませんでした: %1$s</string>
+    <string name="image_processing_rotating">画像を回転しています...</string>
+    <string name="image_processing_applying_rounded_mask">角丸マスクを適用しています...</string>
+    <string name="image_processing_saving">処理後の画像を保存しています...</string>
+    <string name="image_processing_exception_title">画像処理エラー</string>
+    <string name="image_processing_unknown_error">不明なエラーが発生しました</string>
+    <string name="param_vflow_file_apply_mask_shape_name">マスク形状</string>
+    <string name="output_vflow_file_apply_mask_image_name">処理後の画像</string>
+</resources>
