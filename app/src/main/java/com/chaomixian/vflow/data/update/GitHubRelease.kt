@@ -1,8 +1,11 @@
 // 文件: main/java/com/chaomixian/vflow/data/update/GitHubRelease.kt
 package com.chaomixian.vflow.data.update
 
+import android.content.Context
 import android.os.Parcelable
+import com.chaomixian.vflow.R
 import kotlinx.parcelize.Parcelize
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -37,10 +40,10 @@ data class GitHubRelease(
     /**
      * 获取格式化后的发布时间
      */
-    fun getFormattedDate(): String {
+    fun getFormattedDate(locale: Locale = Locale.getDefault()): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
-            val outputFormat = SimpleDateFormat("yyyy年MM月dd日", Locale.CHINA)
+            val outputFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, locale)
             val date = inputFormat.parse(publishedAt)
             date?.let { outputFormat.format(it) } ?: publishedAt
         } catch (e: Exception) {
@@ -49,9 +52,9 @@ data class GitHubRelease(
     }
 
     /**
-     * 获取相对时间（如"3天前"）
+     * 获取本地化后的相对时间。
      */
-    fun getRelativeTime(): String {
+    fun getRelativeTime(context: Context): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
             val publishDate = inputFormat.parse(publishedAt) ?: return publishedAt
@@ -60,11 +63,11 @@ data class GitHubRelease(
             val diffInDays = diffInMillis / (1000 * 60 * 60 * 24)
 
             when {
-                diffInDays == 0L -> "今天"
-                diffInDays == 1L -> "昨天"
-                diffInDays < 30L -> "${diffInDays}天前"
-                diffInDays < 365L -> "${diffInDays / 30}个月前"
-                else -> "${diffInDays / 365}年前"
+                diffInDays == 0L -> context.getString(R.string.changelog_relative_today)
+                diffInDays == 1L -> context.getString(R.string.changelog_relative_yesterday)
+                diffInDays < 30L -> context.getString(R.string.changelog_relative_days_ago, diffInDays)
+                diffInDays < 365L -> context.getString(R.string.changelog_relative_months_ago, diffInDays / 30)
+                else -> context.getString(R.string.changelog_relative_years_ago, diffInDays / 365)
             }
         } catch (e: Exception) {
             publishedAt

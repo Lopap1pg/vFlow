@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog_title">Version history</string>
+    <string name="changelog_back">Back</string>
+    <string name="changelog_load_failed">Failed to load</string>
+    <string name="changelog_unknown_error">Unknown error</string>
+    <string name="changelog_current_version">Current version</string>
+    <string name="changelog_prerelease">Pre-release</string>
+    <string name="changelog_collapse">Collapse</string>
+    <string name="changelog_view_full">View full changelog</string>
+    <string name="changelog_relative_today">Today</string>
+    <string name="changelog_relative_yesterday">Yesterday</string>
+    <string name="changelog_relative_days_ago">%1$d days ago</string>
+    <string name="changelog_relative_months_ago">%1$d months ago</string>
+    <string name="changelog_relative_years_ago">%1$d years ago</string>
+</resources>
