@@ -53,27 +53,29 @@ class CoreSleepScreenModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 1. 确保 Core 连接
+        val appContext = context.applicationContext
         val connected = withContext(Dispatchers.IO) {
-            VFlowCoreBridge.connect(context.applicationContext)
+            VFlowCoreBridge.connect(appContext)
         }
         if (!connected) {
             return ExecutionResult.Failure(
-                "Core 未连接",
-                "vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。"
+                appContext.getString(R.string.core_runtime_not_connected_title),
+                appContext.getString(R.string.core_runtime_not_connected_detail)
             )
         }
 
-        onProgress(ProgressUpdate("正在使用 vFlow Core 关闭屏幕..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.core_sleep_screen_progress)))
 
-        // 2. 执行操作
         val success = VFlowCoreBridge.goToSleep()
 
         return if (success) {
-            onProgress(ProgressUpdate("屏幕关闭成功"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.core_sleep_screen_success)))
             ExecutionResult.Success(mapOf("success" to VBoolean(true)))
         } else {
-            ExecutionResult.Failure("执行失败", "vFlow Core 屏幕关闭失败")
+            ExecutionResult.Failure(
+                appContext.getString(R.string.core_runtime_execution_failed_title),
+                appContext.getString(R.string.core_sleep_screen_failed)
+            )
         }
     }
 }
