@@ -15,9 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.chaomixian.vflow.R
 import com.chaomixian.vflow.data.update.UpdateChecker
 import com.chaomixian.vflow.ui.common.BaseActivity
 import com.chaomixian.vflow.ui.common.VFlowTheme
@@ -76,7 +78,7 @@ fun ChangelogScreen(onBack: () -> Unit) {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "版本历史",
+                        text = stringResource(R.string.changelog_title),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -85,7 +87,7 @@ fun ChangelogScreen(onBack: () -> Unit) {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "返回",
+                            contentDescription = stringResource(R.string.changelog_back),
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -126,13 +128,13 @@ fun ChangelogScreen(onBack: () -> Unit) {
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "加载失败",
+                            text = stringResource(R.string.changelog_load_failed),
                             style = MaterialTheme.typography.titleLarge,
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = errorMessage ?: "未知错误",
+                            text = errorMessage ?: stringResource(R.string.changelog_unknown_error),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -179,6 +181,7 @@ fun ChangelogCard(
     isCurrentVersion: Boolean
 ) {
     var isExpanded by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -221,7 +224,7 @@ fun ChangelogCard(
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Star,
-                                contentDescription = "当前版本",
+                                contentDescription = stringResource(R.string.changelog_current_version),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(16.dp)
                             )
@@ -237,7 +240,7 @@ fun ChangelogCard(
                         )
                         if (isCurrentVersion) {
                             Text(
-                                text = "当前版本",
+                                text = stringResource(R.string.changelog_current_version),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.alpha(0.8f)
@@ -252,7 +255,7 @@ fun ChangelogCard(
                         onClick = {},
                         label = {
                             Text(
-                                text = "预发布",
+                                text = stringResource(R.string.changelog_prerelease),
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Medium
                             )
@@ -273,7 +276,7 @@ fun ChangelogCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = release.getRelativeTime(),
+                    text = release.getRelativeTime(context),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.weight(1f)
@@ -318,7 +321,11 @@ fun ChangelogCard(
                             contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             Text(
-                                text = if (isExpanded) "收起" else "查看完整更新日志",
+                                text = if (isExpanded) {
+                                    stringResource(R.string.changelog_collapse)
+                                } else {
+                                    stringResource(R.string.changelog_view_full)
+                                },
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Medium
                             )
