@@ -13,5 +13,6 @@
     <string name="find_text_root_unavailable_title">サービスエラー</string>
     <string name="find_text_root_unavailable_detail">現在のウィンドウのルートノードを取得できません。</string>
     <string name="find_text_no_match_title">テキストが見つかりません</string>
+    <string name="find_text_no_match_detail">画面上に一致するテキストが見つかりませんでした: 「%1$s」（一致モード: %2$s）</string>
     <string name="find_text_unknown_error">不明なエラーが発生しました</string>
 </resources>
