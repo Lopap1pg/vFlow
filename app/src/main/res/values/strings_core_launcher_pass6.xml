@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_launcher_file_access_required">需要文件访问权限才能启动 vFlowCore</string>
+    <string name="core_launcher_deploy_failed">部署 vFlowCore.dex 失败: %1$s</string>
+    <string name="core_launcher_deploy_failed_short">部署 vFlowCore.dex 失败</string>
+    <string name="core_launcher_ping_timeout">启动后未响应 Ping（等待 5 秒后超时）</string>
+</resources>
