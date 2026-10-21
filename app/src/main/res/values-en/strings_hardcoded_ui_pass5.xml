@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_workflow_not_found">Workflow not found</string>
+    <string name="tile_manual_trigger_required">This workflow cannot be run from a Tile because it has no manual trigger</string>
+    <string name="tile_executing_workflow">Running workflow: %1$s</string>
+    <string name="shortcut_image_selected">Image selected</string>
+    <string name="shortcut_image_select_failed">Failed to select image: %1$s</string>
+    <string name="picker_local_directory_only">Only local directories are supported. Select a directory in local storage.</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tile_workflow_not_found">ワークフローが見つかりません</string>
+    <string name="tile_manual_trigger_required">このワークフローは手動トリガーではないため、Tileから実行できません</string>
+    <string name="tile_executing_workflow">ワークフローを実行: %1$s</string>
+    <string name="shortcut_image_selected">画像を選択しました</string>
+    <string name="shortcut_image_select_failed">画像の選択に失敗しました: %1$s</string>
+    <string name="picker_local_directory_only">ローカルディレクトリのみ対応しています。端末のローカルストレージ内のディレクトリを選択してください。</string>
+</resources>
