@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_runtime_not_connected_title">Core に接続されていません</string>
+    <string name="core_runtime_not_connected_detail">vFlow Core サービスが実行されていません。Shizuku または Root 権限が付与されていることを確認してください。</string>
+    <string name="core_runtime_execution_failed_title">実行に失敗しました</string>
+    <string name="core_runtime_state_enabled">オン</string>
+    <string name="core_runtime_state_disabled">オフ</string>
+    <string name="core_wifi_state_reading">vFlow Core で Wi-Fi の状態を取得しています...</string>
+    <string name="core_wifi_state_result">Wi-Fi の状態: %1$s</string>
+    <string name="core_wake_screen_progress">vFlow Core で画面をオンにしています...</string>
+    <string name="core_wake_screen_success">画面をオンにしました</string>
+    <string name="core_wake_screen_failed">vFlow Core で画面をオンにできませんでした</string>
+    <string name="core_sleep_screen_progress">vFlow Core で画面をオフにしています...</string>
+    <string name="core_sleep_screen_success">画面をオフにしました</string>
+    <string name="core_sleep_screen_failed">vFlow Core で画面をオフにできませんでした</string>
+    <string name="dark_mode_parameter_error_title">パラメータエラー</string>
+    <string name="dark_mode_unsupported_mode">未対応のモード: %1$s</string>
+    <string name="dark_mode_applying">%1$sモードを適用しています...</string>
+    <string name="dark_mode_switch_failed_title">切り替えに失敗しました</string>
+    <string name="dark_mode_completed">完了</string>
+</resources>
