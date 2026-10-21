@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_vflow_file_import_image_image_name">選択した画像</string>
+    <string name="import_image_service_missing_title">サービスがありません</string>
+    <string name="import_image_service_missing_detail">画像選択に必要な UI サービスを取得できません。</string>
+    <string name="import_image_waiting_for_selection">画像の選択を待っています...</string>
+    <string name="import_image_cancelled_title">選択をキャンセルしました</string>
+    <string name="import_image_cancelled_detail">画像の選択がキャンセルされました。</string>
+    <string name="import_image_received">画像を取得しました</string>
+    <string name="core_nfc_state_not_connected_title">Core に接続されていません</string>
+    <string name="core_nfc_state_not_connected_detail">vFlow Core サービスが実行されていません。Shizuku または Root 権限が付与されていることを確認してください。</string>
+    <string name="core_nfc_state_reading">vFlow Core で NFC の状態を取得しています...</string>
+    <string name="core_nfc_state_enabled">オン</string>
+    <string name="core_nfc_state_disabled">オフ</string>
+    <string name="core_nfc_state_result">NFC の状態: %1$s</string>
+</resources>
