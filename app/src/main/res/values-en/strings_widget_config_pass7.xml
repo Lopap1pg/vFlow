@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_config_layout_4x2">4x2 grid (4)</string>
+    <string name="widget_config_layout_2x2">2x2 vertical (2)</string>
+    <string name="widget_config_deleted_workflow">Deleted workflow</string>
+    <string name="widget_config_title">Configure Widget</string>
+    <string name="widget_config_select_workflows_count">Select workflows (%1$d)</string>
+    <string name="widget_config_slot_with_workflow">Slot %1$d: %2$s</string>
+    <string name="widget_config_select_slot">Select slot %1$d</string>
+    <string name="widget_config_clear_slot">[Clear slot]</string>
+    <string name="widget_config_select_slot_workflow">Select workflow for slot %1$d</string>
+</resources>
