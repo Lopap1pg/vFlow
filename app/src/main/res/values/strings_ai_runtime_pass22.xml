@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ai_completion_config_error_title">配置错误</string>
+    <string name="ai_completion_api_key_required">API Key 不能为空</string>
+    <string name="ai_completion_prompt_required">提示词不能为空</string>
+    <string name="ai_completion_unknown_error">未知错误</string>
+</resources>

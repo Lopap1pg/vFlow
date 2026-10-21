@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ai_completion_config_error_title">Configuration error</string>
+    <string name="ai_completion_api_key_required">API Key cannot be empty.</string>
+    <string name="ai_completion_prompt_required">Prompt cannot be empty.</string>
+    <string name="ai_completion_unknown_error">Unknown error</string>
+</resources>

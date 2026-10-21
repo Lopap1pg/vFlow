@@ -54,9 +54,9 @@ class AIModule : BaseModule() {
 
     override val id = "vflow.ai.completion"
     override val metadata = ActionMetadata(
-        name = "AI 对话",  // Fallback
+        name = "AI 对话",
         nameStringRes = R.string.module_vflow_ai_completion_name,
-        description = "调用大模型 API (OpenAI/DeepSeek) 进行智能对话。",  // Fallback
+        description = "调用大模型 API (OpenAI/DeepSeek) 进行智能对话。",
         descriptionStringRes = R.string.module_vflow_ai_completion_desc,
         iconRes = R.drawable.rounded_hexagon_nodes_24,
         category = "网络",
@@ -84,20 +84,17 @@ class AIModule : BaseModule() {
         OutputDefinition("success", "是否成功", VTypeRegistry.BOOLEAN.id, nameStringRes = R.string.output_vflow_ai_completion_success_name)
     )
 
-    // 摘要显示逻辑
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
         val provider = PROVIDER_INPUT_DEFINITION.normalizeEnumValueOrNull(step.parameters["provider"] as? String) ?: PROVIDER_OPENAI
         val promptText = step.parameters["prompt"] as? String ?: ""
         val providerDisplay = getProviderDisplayName(context, provider)
 
-        // 如果内容是"复杂"的（多变量或长文本），VariableResolver.isComplex 会返回 true
         if (VariableResolver.isComplex(promptText)) {
             val providerPill = PillUtil.createPillFromParam(step.parameters["provider"], PROVIDER_INPUT_DEFINITION, isModuleOption = true)
             val prefix = context.getString(R.string.summary_vflow_network_ai_prefix)
             val suffix = context.getString(R.string.summary_vflow_network_ai_middle)
             return PillUtil.buildSpannable(context, prefix, providerPill, suffix, PillUtil.richTextPreview(promptText))
         } else {
-            // 如果内容简单（单变量或短文本），显示完整的摘要（包含 Prompt 药丸）
             val promptPill = PillUtil.createPillFromParam(step.parameters["prompt"], getInputs().find { it.id == "prompt" })
             val prefix = context.getString(R.string.summary_vflow_network_ai_with, providerDisplay)
             return PillUtil.buildSpannable(context, prefix, promptPill)
@@ -108,14 +105,13 @@ class AIModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 获取并解析参数
+        val appContext = context.applicationContext
         val baseUrl = context.getVariableAsString("base_url", "https://api.openai.com/v1")
         val apiKey = context.getVariableAsString("api_key", "")
         val model = context.getVariableAsString("model", "gpt-3.5-turbo")
         val rawPrompt = context.getVariableAsString("prompt", "")
         val prompt = VariableResolver.resolve(rawPrompt, context)
         val systemPrompt = context.getVariableAsString("system_prompt", "You are a helpful assistant.")
-        // 现在 variables 是 Map<String, VObject>，使用 getVariableAsNumber 获取
         val temperature = context.getVariableAsNumber("temperature") ?: 0.7
         val proxyAddress = resolveModuleProxyAddress(
             context.getVariableAsString("proxy_mode", ""),
@@ -123,10 +119,19 @@ class AIModule : BaseModule() {
             context
         )
 
-        if (apiKey.isBlank()) return ExecutionResult.Failure("配置错误", "API Key 不能为空")
-        if (prompt.isBlank()) return ExecutionResult.Failure("配置错误", "提示词不能为空")
+        if (apiKey.isBlank()) {
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.ai_completion_config_error_title),
+                appContext.getString(R.string.ai_completion_api_key_required)
+            )
+        }
+        if (prompt.isBlank()) {
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.ai_completion_config_error_title),
+                appContext.getString(R.string.ai_completion_prompt_required)
+            )
+        }
 
-        // 准备网络请求
         val client = applyProxyIfConfigured(
             OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -135,8 +140,6 @@ class AIModule : BaseModule() {
             proxyAddress
         ).build()
 
-        // 构建 JSON Body
-        // 格式: { "model": "...", "messages": [...], "temperature": ... }
         val messages = listOf(
             mapOf("role" to "system", "content" to systemPrompt),
             mapOf("role" to "user", "content" to prompt)
@@ -150,9 +153,6 @@ class AIModule : BaseModule() {
 
         val jsonBody = gson.toJson(payload)
         val requestBody = jsonBody.toRequestBody("application/json; charset=utf-8".toMediaType())
-
-        // 发送请求
-        // 注意处理 URL 结尾的斜杠
         val endpoint = if (baseUrl.endsWith("/")) "${baseUrl}chat/completions" else "$baseUrl/chat/completions"
 
         val request = Request.Builder()
@@ -162,7 +162,7 @@ class AIModule : BaseModule() {
             .post(requestBody)
             .build()
 
-        onProgress(ProgressUpdate("正在思考 ($model)..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_ai_completion_thinking, model)))
 
         return withContext(Dispatchers.IO) {
             try {
@@ -171,15 +171,19 @@ class AIModule : BaseModule() {
 
                 if (!response.isSuccessful) {
                     val errorMsg = "HTTP ${response.code}: $responseStr"
-                    return@withContext ExecutionResult.Failure("请求失败", errorMsg)
+                    return@withContext ExecutionResult.Failure(
+                        appContext.getString(R.string.error_vflow_ai_completion_request_failed),
+                        errorMsg
+                    )
                 }
 
                 if (responseStr.isNullOrBlank()) {
-                    return@withContext ExecutionResult.Failure("响应为空", "服务器返回了空内容")
+                    return@withContext ExecutionResult.Failure(
+                        appContext.getString(R.string.error_vflow_ai_completion_empty_response),
+                        appContext.getString(R.string.error_vflow_ai_completion_server_returned)
+                    )
                 }
 
-                // 5. 解析响应
-                // 目标路径: choices[0].message.content
                 val jsonObject = gson.fromJson(responseStr, JsonObject::class.java)
                 val choices = jsonObject.getAsJsonArray("choices")
                 if (choices != null && choices.size() > 0) {
@@ -192,14 +196,23 @@ class AIModule : BaseModule() {
                             "success" to VBoolean(true)
                         ))
                     } else {
-                        ExecutionResult.Failure("解析失败", "响应格式不符合预期: message.content 不存在")
+                        ExecutionResult.Failure(
+                            appContext.getString(R.string.error_vflow_ai_completion_parse_failed),
+                            appContext.getString(R.string.error_vflow_ai_completion_no_content)
+                        )
                     }
                 } else {
-                    ExecutionResult.Failure("解析失败", "无法从响应中提取回答: $responseStr")
+                    ExecutionResult.Failure(
+                        appContext.getString(R.string.error_vflow_ai_completion_parse_failed),
+                        appContext.getString(R.string.error_vflow_ai_completion_cannot_extract, responseStr)
+                    )
                 }
 
             } catch (e: Exception) {
-                ExecutionResult.Failure("网络异常", e.message ?: "未知错误")
+                ExecutionResult.Failure(
+                    appContext.getString(R.string.error_vflow_ai_completion_network_error),
+                    e.message ?: appContext.getString(R.string.ai_completion_unknown_error)
+                )
             }
         }
     }
