@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_hotspot_state_reading">正在使用 vFlow Core 读取热点状态...</string>
+    <string name="core_hotspot_state_result">热点状态: %1$s</string>
+    <string name="core_clipboard_result">剪贴板内容: %1$s</string>
+</resources>
