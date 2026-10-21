@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="flashlight_strength_hint_supported">强度百分比 (1–100)</string>
+    <string name="flashlight_strength_hint_unsupported">当前系统不支持（需要 Android 13+）</string>
+</resources>
