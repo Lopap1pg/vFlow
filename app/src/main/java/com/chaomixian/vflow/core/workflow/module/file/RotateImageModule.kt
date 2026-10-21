@@ -54,7 +54,12 @@ class RotateImageModule : BaseModule() {
     )
 
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
-        OutputDefinition("image", "旋转后的图像", VTypeRegistry.IMAGE.id)
+        OutputDefinition(
+            "image",
+            "旋转后的图像",
+            VTypeRegistry.IMAGE.id,
+            nameStringRes = R.string.output_vflow_file_rotate_image_image_name
+        )
     )
 
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
@@ -82,13 +87,16 @@ class RotateImageModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val imageVar = context.getVariableAsImage("image")
-            ?: return ExecutionResult.Failure("参数错误", "需要一个图像变量作为输入。")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.image_processing_param_error_title),
+                appContext.getString(R.string.image_processing_image_input_required)
+            )
 
         val degrees = context.getVariableAsNumber("degrees")?.toFloat() ?: 90.0f
 
-        val appContext = context.applicationContext
-        onProgress(ProgressUpdate("正在加载图像..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.image_processing_loading)))
 
         return try {
             val request = ImageRequest.Builder(appContext)
@@ -97,14 +105,17 @@ class RotateImageModule : BaseModule() {
                 .build()
             val result = Coil.imageLoader(appContext).execute(request)
             val originalBitmap = result.drawable?.toBitmap()
-                ?: return ExecutionResult.Failure("图像加载失败", "无法从 URI 加载位图: ${imageVar.uriString}")
+                ?: return ExecutionResult.Failure(
+                    appContext.getString(R.string.image_processing_load_failed_title),
+                    appContext.getString(R.string.image_processing_load_failed_uri, imageVar.uriString)
+                )
 
-            onProgress(ProgressUpdate("正在旋转图像..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.image_processing_rotating)))
 
             val matrix = Matrix().apply { postRotate(degrees) }
             val rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.width, originalBitmap.height, matrix, true)
 
-            onProgress(ProgressUpdate("正在保存处理后的图像..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.image_processing_saving)))
             // 使用 workDir
             val outputFile = File(context.workDir, "rotated_${UUID.randomUUID()}.png")
             FileOutputStream(outputFile).use {
@@ -118,7 +129,10 @@ class RotateImageModule : BaseModule() {
             ExecutionResult.Success(mapOf("image" to VImage(outputUri)))
 
         } catch (e: Exception) {
-            ExecutionResult.Failure("图像处理异常", e.localizedMessage ?: "发生未知错误")
+            ExecutionResult.Failure(
+                appContext.getString(R.string.image_processing_exception_title),
+                e.localizedMessage ?: appContext.getString(R.string.image_processing_unknown_error)
+            )
         }
     }
 }
