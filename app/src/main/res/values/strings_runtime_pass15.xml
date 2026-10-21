@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_vflow_file_import_image_image_name">选择的图片</string>
+    <string name="import_image_service_missing_title">服务缺失</string>
+    <string name="import_image_service_missing_detail">无法获取 UI 服务来选择图片。</string>
+    <string name="import_image_waiting_for_selection">等待用户选择图片...</string>
+    <string name="import_image_cancelled_title">用户取消</string>
+    <string name="import_image_cancelled_detail">用户取消了图片选择。</string>
+    <string name="import_image_received">已获取图片</string>
+    <string name="core_nfc_state_not_connected_title">Core 未连接</string>
+    <string name="core_nfc_state_not_connected_detail">vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。</string>
+    <string name="core_nfc_state_reading">正在使用 vFlow Core 读取 NFC 状态...</string>
+    <string name="core_nfc_state_enabled">已开启</string>
+    <string name="core_nfc_state_disabled">已关闭</string>
+    <string name="core_nfc_state_result">NFC 状态: %1$s</string>
+</resources>

@@ -30,40 +30,45 @@ class ImportImageModule : BaseModule() {
         categoryId = "file"
     )
 
-    // 此模块需要存储权限来读取图片
     override val requiredPermissions = listOf(PermissionManager.STORAGE)
 
-    // 此模块没有输入
     override fun getInputs(): List<InputDefinition> = emptyList()
 
-    // 输出一个图像变量
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
-        OutputDefinition("image", "选择的图片", VTypeRegistry.IMAGE.id)
+        OutputDefinition(
+            "image",
+            "选择的图片",
+            VTypeRegistry.IMAGE.id,
+            nameStringRes = R.string.output_vflow_file_import_image_image_name
+        )
     )
 
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
-        return "选择一张图片"
+        return context.getString(R.string.summary_vflow_file_import_image)
     }
 
-    /**
-     * 执行模块逻辑。
-     */
     override suspend fun execute(
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val uiService = context.services.get(ExecutionUIService::class)
-            ?: return ExecutionResult.Failure("服务缺失", "无法获取UI服务来选择图片。")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.import_image_service_missing_title),
+                appContext.getString(R.string.import_image_service_missing_detail)
+            )
 
-        onProgress(ProgressUpdate("等待用户选择图片..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.import_image_waiting_for_selection)))
 
-        // 调用UI服务请求图片，并等待结果
         val imageUri = uiService.requestImage()
-            ?: return ExecutionResult.Failure("用户取消", "用户取消了图片选择。")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.import_image_cancelled_title),
+                appContext.getString(R.string.import_image_cancelled_detail)
+            )
 
         val resultVariable = VImage(imageUri)
 
-        onProgress(ProgressUpdate("获取到图片"))
+        onProgress(ProgressUpdate(appContext.getString(R.string.import_image_received)))
         return ExecutionResult.Success(mapOf("image" to resultVariable))
     }
 }

@@ -21,9 +21,9 @@ class CoreNfcStateModule : BaseModule() {
 
     override val id = "vflow.core.nfc_state"
     override val metadata = ActionMetadata(
-        name = "读取NFC状态",  // Fallback
+        name = "读取NFC状态",
         nameStringRes = R.string.module_vflow_core_nfc_state_name,
-        description = "使用 vFlow Core 读取当前NFC开关状态。",  // Fallback
+        description = "使用 vFlow Core 读取当前NFC开关状态。",
         descriptionStringRes = R.string.module_vflow_core_nfc_state_desc,
         iconRes = R.drawable.rounded_nfc_24,
         category = "Core (Beta)",
@@ -48,23 +48,26 @@ class CoreNfcStateModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 1. 确保 Core 连接
+        val appContext = context.applicationContext
         val connected = withContext(Dispatchers.IO) {
-            VFlowCoreBridge.connect(context.applicationContext)
+            VFlowCoreBridge.connect(appContext)
         }
         if (!connected) {
             return ExecutionResult.Failure(
-                "Core 未连接",
-                "vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。"
+                appContext.getString(R.string.core_nfc_state_not_connected_title),
+                appContext.getString(R.string.core_nfc_state_not_connected_detail)
             )
         }
 
-        onProgress(ProgressUpdate("正在使用 vFlow Core 读取NFC状态..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.core_nfc_state_reading)))
 
-        // 2. 执行操作
         val enabled = VFlowCoreBridge.isNfcEnabled()
-
-        onProgress(ProgressUpdate("NFC状态: ${if (enabled) "已开启" else "已关闭"}"))
+        val stateText = if (enabled) {
+            appContext.getString(R.string.core_nfc_state_enabled)
+        } else {
+            appContext.getString(R.string.core_nfc_state_disabled)
+        }
+        onProgress(ProgressUpdate(appContext.getString(R.string.core_nfc_state_result, stateText)))
         return ExecutionResult.Success(mapOf("enabled" to VBoolean(enabled)))
     }
 }

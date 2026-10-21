@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="output_vflow_file_import_image_image_name">Selected image</string>
+    <string name="import_image_service_missing_title">Service missing</string>
+    <string name="import_image_service_missing_detail">Unable to get the UI service for image selection.</string>
+    <string name="import_image_waiting_for_selection">Waiting for image selection...</string>
+    <string name="import_image_cancelled_title">Selection cancelled</string>
+    <string name="import_image_cancelled_detail">Image selection was cancelled.</string>
+    <string name="import_image_received">Image selected</string>
+    <string name="core_nfc_state_not_connected_title">Core not connected</string>
+    <string name="core_nfc_state_not_connected_detail">The vFlow Core service is not running. Make sure Shizuku or Root permission has been granted.</string>
+    <string name="core_nfc_state_reading">Reading NFC state with vFlow Core...</string>
+    <string name="core_nfc_state_enabled">enabled</string>
+    <string name="core_nfc_state_disabled">disabled</string>
+    <string name="core_nfc_state_result">NFC state: %1$s</string>
+</resources>
