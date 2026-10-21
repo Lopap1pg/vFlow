@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_overlay_status_observing">AIが画面を確認中...</string>
+    <string name="agent_overlay_action_ready">準備完了</string>
+    <string name="agent_overlay_pause">一時停止</string>
+    <string name="agent_overlay_end">終了</string>
+    <string name="agent_overlay_cancelled_by_user">ユーザーがタスクを停止しました</string>
+    <string name="agent_overlay_task_continuing">タスクを再開中...</string>
+    <string name="agent_overlay_continue">再開</string>
+    <string name="agent_overlay_paused">一時停止中（画面を操作できます）</string>
+    <string name="agent_overlay_waiting">ユーザーの操作を待機中...</string>
+    <string name="agent_overlay_stopping">停止中...</string>
+    <string name="agent_overlay_confirm_end">終了?</string>
+    <string name="agent_overlay_thinking">思考中: %1$s...</string>
+</resources>
