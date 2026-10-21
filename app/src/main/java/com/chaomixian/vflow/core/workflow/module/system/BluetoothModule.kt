@@ -27,9 +27,9 @@ class BluetoothModule : BaseModule() {
 
     override val id = "vflow.system.bluetooth"
     override val metadata = ActionMetadata(
-        name = "蓝牙设置",  // Fallback
+        name = "蓝牙设置",
         nameStringRes = R.string.module_vflow_system_bluetooth_name,
-        description = "开启、关闭或切换蓝牙状态。",  // Fallback
+        description = "开启、关闭或切换蓝牙状态。",
         descriptionStringRes = R.string.module_vflow_system_bluetooth_desc,
         iconRes = R.drawable.rounded_bluetooth_24,
         category = "应用与系统",
@@ -42,7 +42,6 @@ class BluetoothModule : BaseModule() {
         requiredInputIds = setOf("state"),
     )
 
-    // 动态获取 Shell 权限 + 蓝牙权限
     override fun getRequiredPermissions(step: ActionStep?): List<Permission> {
         return listOf(PermissionManager.BLUETOOTH) + ShellManager.getRequiredPermissions(LogManager.applicationContext)
     }
@@ -96,26 +95,32 @@ class BluetoothModule : BaseModule() {
         val stateInput = getInputs().first { it.id == "state" }
         val rawState = context.getVariableAsString("state", STATE_TOGGLE)
         val state = stateInput.normalizeEnumValue(rawState) ?: rawState
+        val stateIndex = stateInput.options.indexOf(state)
+        val stateDisplay = stateInput.getLocalizedOptions(appContext).getOrNull(stateIndex) ?: state
 
         val bluetoothManager = appContext.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
         if (bluetoothAdapter == null) {
-            return ExecutionResult.Failure("硬件不支持", "该设备不支持蓝牙。")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_bluetooth_no_hardware),
+                appContext.getString(R.string.error_vflow_system_bluetooth_not_supported)
+            )
         }
 
-        onProgress(ProgressUpdate("正在尝试 $state 蓝牙..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_bluetooth_trying, stateDisplay)))
 
-        // 计算出目标状态
         val targetState = when (state) {
             STATE_ON -> true
             STATE_OFF -> false
             STATE_TOGGLE -> !bluetoothAdapter.isEnabled
-            else -> return ExecutionResult.Failure("参数错误", "无效的状态: $state")
+            else -> return ExecutionResult.Failure(
+                appContext.getString(R.string.bluetooth_parameter_error_title),
+                appContext.getString(R.string.error_vflow_system_bluetooth_invalid_state, state)
+            )
         }
 
-        // 1. 优先尝试 Shell
-        onProgress(ProgressUpdate("尝试通过 Shell 执行..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.bluetooth_shell_attempt)))
         val command = if (targetState) "svc bluetooth enable" else "svc bluetooth disable"
         val shellResult = ShellManager.execShellCommand(appContext, command, ShellManager.ShellMode.AUTO)
 
@@ -125,7 +130,6 @@ class BluetoothModule : BaseModule() {
 
         DebugLogger.w("BluetoothModule", "Shell 执行失败: $shellResult，尝试回退到标准 API。")
 
-        // 2. 回退到标准 API
         val success = if (targetState) {
             bluetoothAdapter.enable()
         } else {
