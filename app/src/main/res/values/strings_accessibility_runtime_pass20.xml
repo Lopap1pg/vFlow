@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="send_key_service_not_connected_title">服务未连接</string>
+    <string name="send_key_service_required_detail">执行此操作需要无障碍服务。</string>
+    <string name="send_key_parameter_error_title">参数错误</string>
+    <string name="send_key_invalid_action">无效的操作名称: %1$s</string>
+    <string name="send_key_executing">正在执行操作: %1$s</string>
+    <string name="send_key_execution_failed_progress">执行操作失败: %1$s</string>
+    <string name="send_key_execution_failed_title">操作失败</string>
+    <string name="send_key_execution_failed_detail">系统未能成功执行该全局操作。</string>
+    <string name="find_text_service_not_running_title">服务未运行</string>
+    <string name="find_text_parameter_missing_title">参数缺失</string>
+    <string name="find_text_root_unavailable_title">服务错误</string>
+    <string name="find_text_root_unavailable_detail">无法获取到当前窗口的根节点。</string>
+    <string name="find_text_no_match_title">未找到文本</string>
+    <string name="find_text_no_match_detail">未在屏幕上找到匹配的文本: “%1$s”（匹配模式: %2$s）</string>
+    <string name="find_text_unknown_error">发生了未知错误</string>
+</resources>

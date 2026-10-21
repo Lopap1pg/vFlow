@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="send_key_service_not_connected_title">Service not connected</string>
+    <string name="send_key_service_required_detail">This action requires the accessibility service.</string>
+    <string name="send_key_parameter_error_title">Parameter error</string>
+    <string name="send_key_invalid_action">Invalid action name: %1$s</string>
+    <string name="send_key_executing">Executing action: %1$s</string>
+    <string name="send_key_execution_failed_progress">Failed to execute action: %1$s</string>
+    <string name="send_key_execution_failed_title">Action failed</string>
+    <string name="send_key_execution_failed_detail">The system could not execute the global action.</string>
+    <string name="find_text_service_not_running_title">Service not running</string>
+    <string name="find_text_parameter_missing_title">Missing parameter</string>
+    <string name="find_text_root_unavailable_title">Service error</string>
+    <string name="find_text_root_unavailable_detail">Unable to get the root node of the current window.</string>
+    <string name="find_text_no_match_title">Text not found</string>
+    <string name="find_text_no_match_detail">No matching text was found on screen: “%1$s” (match mode: %2$s)</string>
+    <string name="find_text_unknown_error">An unknown error occurred</string>
+</resources>
