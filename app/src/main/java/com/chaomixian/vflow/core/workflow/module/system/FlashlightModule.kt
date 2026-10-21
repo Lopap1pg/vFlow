@@ -42,11 +42,10 @@ class FlashlightModule : BaseModule() {
         requiredInputIds = setOf("mode"),
     )
 
-    // 操作模式常量
     companion object {
-        const val MODE_TOGGLE = "toggle"  // 切换
-        const val MODE_ON = "on"          // 开启
-        const val MODE_OFF = "off"        // 关闭
+        const val MODE_TOGGLE = "toggle"
+        const val MODE_ON = "on"
+        const val MODE_OFF = "off"
         const val PREFS_NAME = "flashlight_prefs"
         const val PREFS_LAST_STATE = "last_flashlight_state"
         private val MODE_LEGACY_MAP = mapOf(
@@ -57,7 +56,6 @@ class FlashlightModule : BaseModule() {
     }
 
     override fun getInputs(): List<InputDefinition> = listOf(
-        // 操作模式
         InputDefinition(
             id = "mode",
             name = "操作模式",
@@ -73,8 +71,6 @@ class FlashlightModule : BaseModule() {
             inputStyle = InputStyle.CHIP_GROUP,
             nameStringRes = R.string.param_vflow_device_flashlight_mode_name
         ),
-
-        // 手电筒强度（仅Android 13+且在"开启"模式下有效）
         InputDefinition(
             id = "strengthPercent",
             name = "手电筒强度",
@@ -98,9 +94,9 @@ class FlashlightModule : BaseModule() {
                 input.copy(
                     isHidden = !isOnMode,
                     hint = if (supportsStrength) {
-                        "强度百分比 (1-100)"
+                        appContext.getString(R.string.flashlight_strength_hint_supported)
                     } else {
-                        "当前系统不支持 (需要 Android 13+)"
+                        appContext.getString(R.string.flashlight_strength_hint_unsupported)
                     }
                 )
             } else {
@@ -135,9 +131,6 @@ class FlashlightModule : BaseModule() {
         return PillUtil.buildSpannable(context, metadata.getLocalizedName(context) + ": ", modePill)
     }
 
-    /**
-     * 获取带有闪光灯的后置相机ID
-     */
     private fun getBackCameraIdWithFlash(cameraManager: CameraManager): String? {
         return try {
             val cameraIds = cameraManager.cameraIdList
@@ -160,9 +153,6 @@ class FlashlightModule : BaseModule() {
         }
     }
 
-    /**
-     * 获取保存的手电筒状态
-     */
     private fun getLastTorchState(): Boolean {
         return try {
             val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -172,9 +162,6 @@ class FlashlightModule : BaseModule() {
         }
     }
 
-    /**
-     * 保存手电筒状态
-     */
     private fun saveTorchState(isOn: Boolean) {
         try {
             val prefs = appContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -191,53 +178,42 @@ class FlashlightModule : BaseModule() {
         val step = context.allSteps[context.currentStepIndex]
         val mode = getInputs().normalizeEnumValue("mode", step.parameters["mode"] as? String) ?: MODE_TOGGLE
 
-        // 获取 CameraManager
         val cameraManager = appContext.getSystemService(Context.CAMERA_SERVICE) as? CameraManager
             ?: return ExecutionResult.Failure(
                 appContext.getString(R.string.error_vflow_device_flashlight_failed),
                 appContext.getString(R.string.error_vflow_device_flashlight_no_camera)
             )
 
-        // 获取后置相机ID
         val cameraId = getBackCameraIdWithFlash(cameraManager)
             ?: return ExecutionResult.Failure(
                 appContext.getString(R.string.error_vflow_device_flashlight_unavailable),
                 appContext.getString(R.string.error_vflow_device_flashlight_no_camera)
             )
 
-        // 获取相机特性
         val characteristics = cameraManager.getCameraCharacteristics(cameraId)
 
         return try {
             when (mode) {
                 MODE_TOGGLE -> {
                     onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_device_flashlight_toggling)))
-
-                    // 读取上次保存的状态
                     val lastState = getLastTorchState()
                     val targetState = !lastState
-
-                    // 执行切换
                     if (targetState) {
                         turnOnFlashlight(cameraManager, cameraId, characteristics, step)
                     } else {
                         cameraManager.setTorchMode(cameraId, false)
                     }
-
-                    // 保存新状态
                     saveTorchState(targetState)
                 }
 
                 MODE_ON -> {
                     onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_device_flashlight_turning_on)))
-
                     turnOnFlashlight(cameraManager, cameraId, characteristics, step)
                     saveTorchState(true)
                 }
 
                 MODE_OFF -> {
                     onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_device_flashlight_turning_off)))
-
                     cameraManager.setTorchMode(cameraId, false)
                     saveTorchState(false)
                 }
@@ -265,9 +241,6 @@ class FlashlightModule : BaseModule() {
         }
     }
 
-    /**
-     * 打开手电筒（根据系统版本选择合适的方法）
-     */
     private fun turnOnFlashlight(
         cameraManager: CameraManager,
         cameraId: String,
@@ -275,20 +248,16 @@ class FlashlightModule : BaseModule() {
         step: ActionStep
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Android 13+ 支持强度控制
             val maxLevel = characteristics.get(CameraCharacteristics.FLASH_INFO_STRENGTH_MAXIMUM_LEVEL)
 
             if (maxLevel != null && maxLevel > 1) {
-                // 设备支持强度控制
                 val strengthPercent = (step.parameters["strengthPercent"] as? Number)?.toInt() ?: 50
                 val strengthLevel = ((strengthPercent / 100.0) * maxLevel).toInt().coerceIn(1, maxLevel)
                 cameraManager.turnOnTorchWithStrengthLevel(cameraId, strengthLevel)
             } else {
-                // 设备不支持强度控制，使用默认方法
                 cameraManager.setTorchMode(cameraId, true)
             }
         } else {
-            // Android 12 及以下，使用传统方法
             cameraManager.setTorchMode(cameraId, true)
         }
     }
