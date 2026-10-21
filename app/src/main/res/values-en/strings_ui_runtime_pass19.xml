@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_view_empty_value">[Empty]</string>
+    <string name="choose_list_default_prompt">Please choose</string>
+    <string name="choose_list_invalid_title">Invalid list</string>
+    <string name="choose_list_invalid_detail">Select a list variable as the input.</string>
+    <string name="choose_list_empty_title">Empty list</string>
+    <string name="choose_list_empty_detail">There are no items to choose from.</string>
+    <string name="choose_list_service_missing_title">Service missing</string>
+    <string name="choose_list_service_missing_detail">Unable to display the list.</string>
+    <string name="choose_list_cancelled_title">Selection cancelled</string>
+    <string name="choose_list_cancelled_detail">List selection was cancelled.</string>
+    <string name="choose_list_selection_invalid_title">Invalid selection</string>
+    <string name="choose_list_selection_invalid_detail">The selected item could not be found.</string>
+    <string name="choose_list_selected">Selected: %1$s</string>
+</resources>
