@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="category_device">端末とシステム</string>
+
+    <string name="module_config_sherpa_model_bilingual">中国語・英語バイリンガルストリーミングモデル</string>
+    <string name="module_config_voice_trigger_templates_title">共有ウェイクフレーズテンプレート</string>
+    <string name="module_config_voice_trigger_templates_desc">共有する音声テンプレートを3回録音します。</string>
+    <string name="module_config_voice_trigger_templates_missing">テンプレート状態: %1$d/%2$d 録音済み</string>
+    <string name="module_config_voice_trigger_templates_ready">テンプレート状態: %1$d/%2$d 録音済み</string>
+    <string name="module_config_voice_trigger_record_templates">テンプレートを3回録音</string>
+    <string name="voice_trigger_open_module_config">モジュール設定を開く</string>
+
+    <string name="module_config_chat_llm_desc">ChatScreenで使用するモデルプリセットを保存します。複数のプロバイダー、モデル名、API Key、Base URL、システムプロンプトを登録し、新しい会話で使う既定のプリセットも設定できます。</string>
+    <string name="module_config_chat_provider">プロバイダー</string>
+    <string name="module_config_chat_api_key_hint">選択したプロバイダーのAPI Keyを入力</string>
+    <string name="module_config_chat_quick_start_body">通常はプロバイダー、モデル名、API Keyの3項目を設定するだけで使い始められます。Base URL、システムプロンプト、温度は初期値のままでも構いません。</string>
+    <string name="module_config_chat_provider_hint_standard">公式プロバイダーでは通常、既定のBase URLをそのまま使用できます。</string>
+    <string name="module_config_chat_provider_hint_custom">OpenAI互換サービスでは通常、詳細設定でBase URLの指定も必要です。</string>
+    <string name="module_config_chat_validation_tip">少なくともモデル名とBase URLを入力してください。認証が必要なプロバイダーではAPI Keyも必要です。</string>
+
+    <string name="module_vflow_data_input_name">入力を求める</string>
+    <string name="module_vflow_variable_load_desc">別のワークフローから名前付き変数を読み込みます</string>
+
+    <string name="module_vflow_trigger_voice_template_desc">モジュール設定で3回録音した共有音声テンプレートを使い、類似する音声をバックグラウンドで継続監視してワークフローを起動します。</string>
+    <string name="param_vflow_trigger_voice_template_templates_name">共有音声テンプレート</string>
+    <string name="summary_vflow_trigger_voice_template_not_recorded">モジュール設定の共有音声テンプレートがまだ録音されていません</string>
+    <string name="summary_vflow_trigger_voice_template_templates_ready">共有テンプレート準備完了</string>
+
+    <string name="summary_vflow_trigger_location_coordinates" formatted="false">%.6f, %.6f (%d m)</string>
+    <string name="summary_vflow_system_location_range_check_coordinates" formatted="false">%.6f, %.6f (%d m)</string>
+
+    <string name="module_vflow_feishu_send_message_desc">アプリ認証またはユーザー認証で、ユーザーやグループチャットにFeishuメッセージを送信します</string>
+    <string name="param_vflow_feishu_send_message_auth_mode_name">認証方式</string>
+    <string name="option_vflow_feishu_send_message_auth_mode_tenant">アプリ認証</string>
+    <string name="option_vflow_feishu_send_message_auth_mode_user">ユーザー認証</string>
+
+    <string name="option_vflow_ai_agent_provider_dashscope">Alibaba Cloud Bailian</string>
+    <string name="option_vflow_ai_agent_provider_zhipu">Zhipu AI</string>
+
+    <string name="output_vflow_device_delay_success_name">成功</string>
+    <string name="output_vflow_device_toast_success_name">成功</string>
+    <string name="output_vflow_system_find_installed_app_success_name">成功</string>
+    <string name="output_vflow_system_find_installed_app_found_name">一致あり</string>
+    <string name="output_vflow_system_launch_app_success_name">成功</string>
+    <string name="output_vflow_system_launch_shortcut_success_name">成功</string>
+    <string name="output_vflow_system_close_app_success_name">成功</string>
+    <string name="output_vflow_system_brightness_success_name">成功</string>
+    <string name="output_vflow_system_set_clipboard_success_name">成功</string>
+    <string name="output_vflow_system_sleep_screen_success_name">成功</string>
+    <string name="output_vflow_system_wake_screen_success_name">成功</string>
+    <string name="output_vflow_interaction_input_text_success_name">成功</string>
+    <string name="output_vflow_trigger_manual_success_name">成功</string>
+    <string name="output_vflow_file_save_image_success_name">成功</string>
+    <string name="output_vflow_notification_send_notification_success_name">成功</string>
+    <string name="output_vflow_data_file_operation_success_name">成功</string>
+    <string name="output_vflow_network_bark_push_success_name">成功</string>
+    <string name="output_vflow_network_discord_push_success_name">成功</string>
+    <string name="output_vflow_device_send_key_event_success_name">成功</string>
+    <string name="output_vflow_ai_agent_success_name">成功</string>
+    <string name="output_vflow_interaction_screen_operation_success_name">成功</string>
+    <string name="output_vflow_interaction_ui_selector_success_name">成功</string>
+    <string name="output_vflow_interaction_ui_selector_found_name">検出あり</string>
+    <string name="output_vflow_ai_completion_success_name">成功</string>
+    <string name="output_vflow_data_quick_view_success_name">成功</string>
+
+    <string name="output_vflow_feishu_get_message_history_has_more_name">次のページあり</string>
+</resources>
