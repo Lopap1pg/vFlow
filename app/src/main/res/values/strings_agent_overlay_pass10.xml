@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="agent_overlay_status_observing">AI 正在观察...</string>
+    <string name="agent_overlay_action_ready">准备就绪</string>
+    <string name="agent_overlay_pause">暂停</string>
+    <string name="agent_overlay_end">结束</string>
+    <string name="agent_overlay_cancelled_by_user">用户手动停止了任务</string>
+    <string name="agent_overlay_task_continuing">任务继续...</string>
+    <string name="agent_overlay_continue">继续</string>
+    <string name="agent_overlay_paused">已暂停（您可以操作屏幕）</string>
+    <string name="agent_overlay_waiting">等待用户指令...</string>
+    <string name="agent_overlay_stopping">正在停止...</string>
+    <string name="agent_overlay_confirm_end">确定?</string>
+    <string name="agent_overlay_thinking">思考中: %1$s...</string>
+</resources>
