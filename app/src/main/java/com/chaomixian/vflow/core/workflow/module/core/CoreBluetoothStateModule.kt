@@ -13,10 +13,6 @@ import kotlinx.coroutines.withContext
 import com.chaomixian.vflow.permissions.Permission
 import com.chaomixian.vflow.permissions.PermissionManager
 
-/**
- * 读取蓝牙状态模块（Beta）。
- * 使用 vFlow Core 读取当前蓝牙开关状态。
- */
 class CoreBluetoothStateModule : BaseModule() {
 
     override val id = "vflow.core.bluetooth_state"
@@ -35,42 +31,37 @@ class CoreBluetoothStateModule : BaseModule() {
         workflowStepDescription = "Read Bluetooth state through vFlow Core.",
     )
 
-    override fun getRequiredPermissions(step: ActionStep?): List<Permission> {
-        return listOf(PermissionManager.CORE)
-    }
-
+    override fun getRequiredPermissions(step: ActionStep?): List<Permission> = listOf(PermissionManager.CORE)
     override fun getInputs(): List<InputDefinition> = emptyList()
 
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
         OutputDefinition("enabled", "蓝牙状态", VTypeRegistry.BOOLEAN.id, nameStringRes = R.string.output_vflow_core_bluetooth_state_enabled_name)
     )
 
-    override fun getSummary(context: Context, step: ActionStep): CharSequence {
-        return context.getString(R.string.summary_vflow_core_bluetooth_state)
-    }
+    override fun getSummary(context: Context, step: ActionStep): CharSequence =
+        context.getString(R.string.summary_vflow_core_bluetooth_state)
 
     override suspend fun execute(
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 1. 确保 Core 连接
-        val connected = withContext(Dispatchers.IO) {
-            VFlowCoreBridge.connect(context.applicationContext)
-        }
+        val appContext = context.applicationContext
+        val connected = withContext(Dispatchers.IO) { VFlowCoreBridge.connect(appContext) }
         if (!connected) {
             return ExecutionResult.Failure(
-                "Core 未连接",
-                "vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。"
+                appContext.getString(R.string.core_runtime_not_connected_title),
+                appContext.getString(R.string.core_runtime_not_connected_detail)
             )
         }
 
-        onProgress(ProgressUpdate(context.applicationContext.getString(R.string.msg_vflow_core_bluetooth_state_reading)))
-
-        // 2. 执行操作
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_core_bluetooth_state_reading)))
         val enabled = VFlowCoreBridge.isBluetoothEnabled()
-
-        val statusMsg = if (enabled) "已开启" else "已关闭"
-        onProgress(ProgressUpdate("蓝牙状态: $statusMsg"))
+        val statusText = if (enabled) {
+            appContext.getString(R.string.msg_vflow_core_bluetooth_state_enabled)
+        } else {
+            appContext.getString(R.string.msg_vflow_core_bluetooth_state_disabled)
+        }
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_core_bluetooth_state_changed, statusText)))
         return ExecutionResult.Success(mapOf("enabled" to VBoolean(enabled)))
     }
 }
