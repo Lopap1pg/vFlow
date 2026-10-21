@@ -129,7 +129,8 @@ class SendKeyEventModule : BaseModule() {
                 appContext.getString(R.string.send_key_parameter_error_title),
                 appContext.getString(R.string.send_key_invalid_action, keyName)
             )
-        val actionDisplayName = actionInput.getLocalizedOption(appContext, keyName) ?: keyName
+        val optionIndex = actionInput.options.indexOf(keyName)
+        val actionDisplayName = actionInput.getLocalizedOptions(appContext).getOrNull(optionIndex) ?: keyName
 
         onProgress(ProgressUpdate(appContext.getString(R.string.send_key_executing, actionDisplayName)))
 
