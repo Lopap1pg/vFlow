@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="integration_control_parameter_error_title">Parameter error</string>
+    <string name="integration_control_invalid_action">Invalid %1$s action: %2$s</string>
+    <string name="integration_control_sending">Sending the “%2$s” control Intent to %1$s...</string>
+    <string name="integration_control_call_failed_title">%1$s call failed</string>
+    <string name="integration_control_send_failed">Failed to send the control Intent: %1$s</string>
+    <string name="integration_control_unknown_error">Unknown error</string>
+</resources>
