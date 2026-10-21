@@ -20,6 +20,7 @@
 
     <string name="module_vflow_data_input_name">入力を求める</string>
     <string name="module_vflow_variable_load_desc">別のワークフローから名前付き変数を読み込みます</string>
+    <string name="option_vflow_data_file_operation_mode_local">ローカル</string>
 
     <string name="module_vflow_trigger_voice_template_desc">モジュール設定で3回録音した共有音声テンプレートを使い、類似する音声をバックグラウンドで継続監視してワークフローを起動します。</string>
     <string name="param_vflow_trigger_voice_template_templates_name">共有音声テンプレート</string>
@@ -28,14 +29,17 @@
 
     <string name="summary_vflow_trigger_location_coordinates" formatted="false">%.6f, %.6f (%d m)</string>
     <string name="summary_vflow_system_location_range_check_coordinates" formatted="false">%.6f, %.6f (%d m)</string>
+    <string name="output_vflow_system_location_range_check_inside_name">範囲内</string>
 
     <string name="module_vflow_feishu_send_message_desc">アプリ認証またはユーザー認証で、ユーザーやグループチャットにFeishuメッセージを送信します</string>
     <string name="param_vflow_feishu_send_message_auth_mode_name">認証方式</string>
     <string name="option_vflow_feishu_send_message_auth_mode_tenant">アプリ認証</string>
     <string name="option_vflow_feishu_send_message_auth_mode_user">ユーザー認証</string>
+    <string name="output_vflow_feishu_get_message_history_has_more_name">次のページあり</string>
 
     <string name="option_vflow_ai_agent_provider_dashscope">Alibaba Cloud Bailian</string>
     <string name="option_vflow_ai_agent_provider_zhipu">Zhipu AI</string>
+    <string name="summary_vflow_ai_completion_with"> $provider に送信: </string>
 
     <string name="output_vflow_device_delay_success_name">成功</string>
     <string name="output_vflow_device_toast_success_name">成功</string>
@@ -58,10 +62,12 @@
     <string name="output_vflow_device_send_key_event_success_name">成功</string>
     <string name="output_vflow_ai_agent_success_name">成功</string>
     <string name="output_vflow_interaction_screen_operation_success_name">成功</string>
+    <string name="output_vflow_interaction_find_until_success_name">検出あり</string>
     <string name="output_vflow_interaction_ui_selector_success_name">成功</string>
     <string name="output_vflow_interaction_ui_selector_found_name">検出あり</string>
+    <string name="output_vflow_interaction_find_element_success_name">成功</string>
+    <string name="output_vflow_interaction_find_element_found_name">検出あり</string>
+    <string name="output_vflow_interaction_operit_success_name">成功</string>
     <string name="output_vflow_ai_completion_success_name">成功</string>
     <string name="output_vflow_data_quick_view_success_name">成功</string>
-
-    <string name="output_vflow_feishu_get_message_history_has_more_name">次のページあり</string>
 </resources>
