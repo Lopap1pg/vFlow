@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="battery_status_fetch_failed_title">取得に失敗しました</string>
+    <string name="battery_status_info_unavailable">バッテリー情報を取得できません。</string>
+    <string name="battery_status_level_invalid">有効なバッテリー残量を取得できません。</string>
+    <string name="battery_status_temperature_invalid">有効なバッテリー温度を取得できません。</string>
+    <string name="system_info_fetch_failed_title">取得に失敗しました</string>
+    <string name="system_info_invalid_value">無効な情報タイプ: %1$s</string>
+</resources>

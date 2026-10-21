@@ -73,19 +73,29 @@ class GetBatteryStatusModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        val batteryIntent = context.applicationContext.registerReceiver(
+        val appContext = context.applicationContext
+        val batteryIntent = appContext.registerReceiver(
             null,
             IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         )
         if (batteryIntent == null) {
-            return ExecutionResult.Failure("获取失败", "无法获取电池信息")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.battery_status_fetch_failed_title),
+                appContext.getString(R.string.battery_status_info_unavailable)
+            )
         }
 
         val batteryLevel = readBatteryLevelPercent(batteryIntent)
-            ?: return ExecutionResult.Failure("获取失败", "无法获取有效的电池电量")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.battery_status_fetch_failed_title),
+                appContext.getString(R.string.battery_status_level_invalid)
+            )
         val charging = readChargingState(batteryIntent)
         val temperatureCelsius = readTemperatureCelsius(batteryIntent)
-            ?: return ExecutionResult.Failure("获取失败", "无法获取有效的电池温度")
+            ?: return ExecutionResult.Failure(
+                appContext.getString(R.string.battery_status_fetch_failed_title),
+                appContext.getString(R.string.battery_status_temperature_invalid)
+            )
 
         return ExecutionResult.Success(
             mapOf(

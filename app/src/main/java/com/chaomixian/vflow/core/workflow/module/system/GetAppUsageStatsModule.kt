@@ -3,7 +3,6 @@ package com.chaomixian.vflow.core.workflow.module.system
 
 import android.app.usage.UsageStatsManager
 import android.content.Context
-import android.content.pm.PackageManager
 import com.chaomixian.vflow.R
 import com.chaomixian.vflow.core.execution.ExecutionContext
 import com.chaomixian.vflow.core.module.*
@@ -11,7 +10,6 @@ import com.chaomixian.vflow.core.types.VObjectFactory
 import com.chaomixian.vflow.core.types.VTypeRegistry
 import com.chaomixian.vflow.core.types.basic.VBoolean
 import com.chaomixian.vflow.core.types.basic.VList
-import com.chaomixian.vflow.core.types.basic.VNumber
 import com.chaomixian.vflow.core.types.basic.VString
 import com.chaomixian.vflow.core.workflow.model.ActionStep
 import com.chaomixian.vflow.permissions.PermissionManager
@@ -29,9 +27,9 @@ class GetAppUsageStatsModule : BaseModule() {
 
     override val id = "vflow.system.get_usage_stats"
     override val metadata = ActionMetadata(
-        name = "获取应用使用情况",  // Fallback
+        name = "获取应用使用情况",
         nameStringRes = R.string.module_vflow_system_get_usage_stats_name,
-        description = "获取设备上应用的屏幕使用时间统计。",  // Fallback
+        description = "获取设备上应用的屏幕使用时间统计。",
         descriptionStringRes = R.string.module_vflow_system_get_usage_stats_desc,
         iconRes = R.drawable.rounded_data_object_24,
         category = "应用与系统",
@@ -87,7 +85,7 @@ class GetAppUsageStatsModule : BaseModule() {
             id = "max_results",
             name = "最大结果数",
             staticType = ParameterType.NUMBER,
-            defaultValue = 10.0, // 默认前10个
+            defaultValue = 10.0,
             acceptsMagicVariable = true,
             acceptedMagicVariableTypes = setOf(VTypeRegistry.NUMBER.id),
             nameStringRes = R.string.param_vflow_system_get_usage_stats_max_results_name
@@ -113,16 +111,17 @@ class GetAppUsageStatsModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val intervalInput = getInputs().first { it.id == "interval" }
         val rawIntervalStr = context.getVariableAsString("interval", INTERVAL_TODAY)
         val intervalStr = intervalInput.normalizeEnumValue(rawIntervalStr) ?: rawIntervalStr
-        // 现在 variables 是 Map<String, VObject>，使用 getVariableAsInt 获取
+        val intervalIndex = intervalInput.options.indexOf(intervalStr)
+        val intervalDisplay = intervalInput.getLocalizedOptions(appContext).getOrNull(intervalIndex) ?: intervalStr
         val maxResults = context.getVariableAsInt("max_results") ?: 10
 
-        val usageStatsManager = context.applicationContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
-        val pm = context.applicationContext.packageManager
+        val usageStatsManager = appContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val pm = appContext.packageManager
 
-        // 计算时间范围
         val calendar = Calendar.getInstance()
         val endTime = calendar.timeInMillis
         val startTime = when (intervalStr) {
@@ -152,20 +151,19 @@ class GetAppUsageStatsModule : BaseModule() {
             else -> endTime - 24 * 60 * 60 * 1000
         }
 
-        onProgress(ProgressUpdate("正在查询 $intervalStr 的使用记录..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_get_usage_stats_querying, intervalDisplay)))
 
-        // 查询并聚合数据
-        // queryAndAggregateUsageStats 返回的是 Map<String, UsageStats>
         val statsMap = usageStatsManager.queryAndAggregateUsageStats(startTime, endTime)
 
         if (statsMap.isEmpty()) {
-            // 如果返回为空，可能是权限没给，或者系统未记录
-            return ExecutionResult.Failure("获取失败", "未获取到使用数据，请确保“使用情况访问权限”已授予且系统已记录数据。")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_get_usage_stats_fetch_failed),
+                appContext.getString(R.string.error_vflow_system_get_usage_stats_no_data)
+            )
         }
 
-        // 过滤和排序
         val sortedStats = statsMap.values
-            .filter { it.totalTimeInForeground > 0 } // 只保留有使用记录的
+            .filter { it.totalTimeInForeground > 0 }
             .sortedByDescending { it.totalTimeInForeground }
             .take(maxResults)
             .map { usageStats ->
@@ -176,18 +174,17 @@ class GetAppUsageStatsModule : BaseModule() {
                     packageName
                 }
 
-                // 转换为字典格式
                 mapOf(
                     "package_name" to packageName,
                     "app_name" to appName,
                     "total_time_ms" to usageStats.totalTimeInForeground,
-                    "total_time_minutes" to (usageStats.totalTimeInForeground / 1000 / 60), // 分钟
+                    "total_time_minutes" to (usageStats.totalTimeInForeground / 1000 / 60),
                     "last_time_used" to usageStats.lastTimeUsed
                 )
             }
 
         if (sortedStats.isEmpty()) {
-            onProgress(ProgressUpdate("指定时间段内没有应用使用记录"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_get_usage_stats_empty)))
             return ExecutionResult.Success(mapOf(
                 "stats_list" to VList(emptyList()),
                 "most_used_app" to VString(""),
@@ -195,11 +192,10 @@ class GetAppUsageStatsModule : BaseModule() {
             ))
         }
 
-        // 使用安全的访问方式，代码意图更清晰
         val mostUsed = sortedStats.firstOrNull()?.get("package_name") as? String ?: ""
         val mostUsedName = sortedStats.firstOrNull()?.get("app_name") as? String ?: ""
 
-        onProgress(ProgressUpdate("最常使用: $mostUsedName"))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_get_usage_stats_most_used, mostUsedName)))
 
         return ExecutionResult.Success(mapOf(
             "stats_list" to VList(sortedStats.map { VObjectFactory.from(it) }),

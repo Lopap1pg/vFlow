@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="battery_status_fetch_failed_title">Fetch failed</string>
+    <string name="battery_status_info_unavailable">Unable to retrieve battery information.</string>
+    <string name="battery_status_level_invalid">Unable to retrieve a valid battery level.</string>
+    <string name="battery_status_temperature_invalid">Unable to retrieve a valid battery temperature.</string>
+    <string name="system_info_fetch_failed_title">Fetch failed</string>
+    <string name="system_info_invalid_value">Invalid information type: %1$s</string>
+</resources>
