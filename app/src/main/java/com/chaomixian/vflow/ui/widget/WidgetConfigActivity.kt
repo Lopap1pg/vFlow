@@ -31,10 +31,12 @@ class WidgetConfigActivity : BaseActivity() {
     private lateinit var workflowManager: WorkflowManager
 
     // 布局类型和对应的插槽数量
-    private val layoutOptions = listOf(
-        LayoutOption("4x2 网格 (4个)", WidgetUpdater.LAYOUT_4X2, 4),
-        LayoutOption("2x2 纵向 (2个)", WidgetUpdater.LAYOUT_2X2, 2)
-    )
+    private val layoutOptions by lazy {
+        listOf(
+            LayoutOption(getString(R.string.widget_config_layout_4x2), WidgetUpdater.LAYOUT_4X2, 4),
+            LayoutOption(getString(R.string.widget_config_layout_2x2), WidgetUpdater.LAYOUT_2X2, 2)
+        )
+    }
 
     private var selectedLayout = WidgetUpdater.LAYOUT_4X2
     private var currentSlotCount = 4
@@ -87,14 +89,14 @@ class WidgetConfigActivity : BaseActivity() {
             if (workflowId != null) {
                 selectedWorkflows[i] = workflowId
                 val workflow = workflowManager.getWorkflow(workflowId)
-                selectedWorkflowNames[i] = workflow?.name ?: "已删除的工作流"
+                selectedWorkflowNames[i] = workflow?.name ?: getString(R.string.widget_config_deleted_workflow)
             }
         }
     }
 
     private fun setupUI() {
         val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        toolbar.title = "配置小组件"
+        toolbar.title = getString(R.string.widget_config_title)
         setSupportActionBar(toolbar)
 
         // 设置布局选择下拉框
@@ -146,7 +148,7 @@ class WidgetConfigActivity : BaseActivity() {
             }
         }
 
-        slotCountLabel.text = "选择工作流 (${currentSlotCount}个)"
+        slotCountLabel.text = getString(R.string.widget_config_select_workflows_count, currentSlotCount)
     }
 
     private fun updateSlotButtonTexts() {
@@ -169,22 +171,22 @@ class WidgetConfigActivity : BaseActivity() {
 
     private fun updateSlotButtonText(slotIndex: Int, button: MaterialButton, workflowName: String?) {
         button.text = if (workflowName != null) {
-            "插槽 ${slotIndex + 1}: $workflowName"
+            getString(R.string.widget_config_slot_with_workflow, slotIndex + 1, workflowName)
         } else {
-            "选择插槽 ${slotIndex + 1}"
+            getString(R.string.widget_config_select_slot, slotIndex + 1)
         }
     }
 
     private fun showWorkflowSelectionDialog(slotIndex: Int, button: MaterialButton) {
         val workflows = workflowManager.getAllWorkflows()
         val items = buildList {
-            add(WorkflowDialogItem(id = "", name = "[清空插槽]"))
+            add(WorkflowDialogItem(id = "", name = getString(R.string.widget_config_clear_slot)))
             addAll(workflows.map { WorkflowDialogItem(id = it.id, name = it.name) })
         }
 
         SearchableWorkflowDialog.show(
             context = this,
-            title = "选择插槽 ${slotIndex + 1} 的工作流",
+            title = getString(R.string.widget_config_select_slot_workflow, slotIndex + 1),
             items = items,
             onSelected = { selectedItem ->
                 if (selectedItem.id.isEmpty()) {
