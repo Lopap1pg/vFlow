@@ -27,7 +27,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="布局样式"
+                android:text="@string/widget_config_layout_style"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_marginBottom="8dp" />
 
@@ -48,7 +48,7 @@
                 android:id="@+id/tv_slot_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="选择工作流"
+                android:text="@string/widget_config_select_workflows"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:layout_marginBottom="8dp" />
 
