@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_view_empty_value">[空值]</string>
+    <string name="choose_list_default_prompt">请选择</string>
+    <string name="choose_list_invalid_title">列表无效</string>
+    <string name="choose_list_invalid_detail">请选择一个列表变量作为输入</string>
+    <string name="choose_list_empty_title">列表为空</string>
+    <string name="choose_list_empty_detail">没有可选择的项目</string>
+    <string name="choose_list_service_missing_title">服务缺失</string>
+    <string name="choose_list_service_missing_detail">无法显示列表</string>
+    <string name="choose_list_cancelled_title">已取消选择</string>
+    <string name="choose_list_cancelled_detail">用户取消了列表选择</string>
+    <string name="choose_list_selection_invalid_title">选择无效</string>
+    <string name="choose_list_selection_invalid_detail">未找到所选项目</string>
+    <string name="choose_list_selected">已选择: %1$s</string>
+</resources>
