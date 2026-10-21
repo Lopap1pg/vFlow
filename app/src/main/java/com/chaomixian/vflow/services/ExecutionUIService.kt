@@ -37,7 +37,6 @@ class ExecutionUIService(private val context: Context) {
         private const val TAG = "ExecutionUIService"
         var inputCompletable: CompletableDeferred<Any?>? = null
         private const val INTERACTIVE_CHANNEL_ID = "vflow_interactive_notifications"
-        private const val INTERACTIVE_CHANNEL_NAME = "交互式请求"
         private const val QUICK_VIEW_TEXT_LIMIT = 50_000
         private val notificationIdCounter = AtomicInteger(1000)
 
@@ -61,10 +60,10 @@ class ExecutionUIService(private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 INTERACTIVE_CHANNEL_ID,
-                INTERACTIVE_CHANNEL_NAME,
+                context.getString(R.string.execution_ui_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "用于在工作流执行期间请求用户交互"
+                description = context.getString(R.string.execution_ui_channel_desc)
             }
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             manager.createNotificationChannel(channel)
@@ -192,7 +191,11 @@ class ExecutionUIService(private val context: Context) {
             putExtra("input_type", type)
             putExtra("title", title)
         }
-        return startActivityAndAwaitResult(intent, title, "点击这里输入 $type").await()
+        return startActivityAndAwaitResult(
+            intent,
+            title,
+            context.getString(R.string.execution_ui_input_notification_content, type)
+        ).await()
     }
 
     suspend fun requestMenuChoice(title: String, choices: List<String>): Int? {
@@ -252,7 +255,11 @@ class ExecutionUIService(private val context: Context) {
             putExtra("title", title)
             putExtra("content", imageUri)
         }
-        startActivityAndAwaitResult(intent, title, "点击查看图片").await()
+        startActivityAndAwaitResult(
+            intent,
+            title,
+            context.getString(R.string.execution_ui_quick_view_image_notification_content)
+        ).await()
     }
 
 
@@ -264,7 +271,11 @@ class ExecutionUIService(private val context: Context) {
         val intent = Intent(context, OverlayUIActivity::class.java).apply {
             putExtra("request_type", "pick_image")
         }
-        return startActivityAndAwaitResult(intent, "选择图片", "请点击以从相册中选择一张图片").await() as? String
+        return startActivityAndAwaitResult(
+            intent,
+            context.getString(R.string.execution_ui_select_image_title),
+            context.getString(R.string.execution_ui_select_image_content)
+        ).await() as? String
     }
 
     /**
@@ -278,7 +289,11 @@ class ExecutionUIService(private val context: Context) {
             putExtra("request_type", "workflow_chooser")
             putExtra("workflow_list", workflowInfo as Serializable)
         }
-        return startActivityAndAwaitResult(intent, "选择工作流", "有多个工作流可处理此操作，请选择一个").await() as? String
+        return startActivityAndAwaitResult(
+            intent,
+            context.getString(R.string.execution_ui_select_workflow_title),
+            context.getString(R.string.execution_ui_select_workflow_content)
+        ).await() as? String
     }
 
     /**
@@ -305,7 +320,11 @@ class ExecutionUIService(private val context: Context) {
                 else -> return false
             }
         }
-        return startActivityAndAwaitResult(intent, "分享", "点击以打开系统分享菜单").await() as? Boolean
+        return startActivityAndAwaitResult(
+            intent,
+            context.getString(R.string.execution_ui_share_title),
+            context.getString(R.string.execution_ui_share_content)
+        ).await() as? Boolean
     }
 
     /**
@@ -316,7 +335,11 @@ class ExecutionUIService(private val context: Context) {
         val intent = Intent(context, OverlayUIActivity::class.java).apply {
             putExtra("request_type", "media_projection")
         }
-        return startActivityAndAwaitResult(intent, "需要截图权限", "请点击以授予vFlow屏幕截图权限").await() as? Intent
+        return startActivityAndAwaitResult(
+            intent,
+            context.getString(R.string.execution_ui_media_projection_title),
+            context.getString(R.string.execution_ui_media_projection_content)
+        ).await() as? Intent
     }
 
     /**

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="execution_ui_channel_name">操作リクエスト</string>
+    <string name="execution_ui_channel_desc">ワークフロー実行中にユーザー操作を求める通知</string>
+    <string name="execution_ui_input_notification_content">タップして%1$sを入力</string>
+    <string name="execution_ui_quick_view_image_notification_content">タップして画像を表示</string>
+    <string name="execution_ui_select_image_title">画像を選択</string>
+    <string name="execution_ui_select_image_content">タップしてアルバムから画像を選択してください</string>
+    <string name="execution_ui_select_workflow_title">ワークフローを選択</string>
+    <string name="execution_ui_select_workflow_content">この操作を処理できるワークフローが複数あります。1つ選択してください</string>
+    <string name="execution_ui_share_title">共有</string>
+    <string name="execution_ui_share_content">タップしてシステムの共有メニューを開く</string>
+    <string name="execution_ui_media_projection_title">スクリーンショット権限が必要です</string>
+    <string name="execution_ui_media_projection_content">タップしてvFlowにスクリーンショット権限を許可してください</string>
+</resources>
