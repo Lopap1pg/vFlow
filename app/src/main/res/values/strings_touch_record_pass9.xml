@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_touch_recording_status_initial">正在录制触摸... 0.0s | 0 个事件</string>
+    <string name="text_touch_recording_status_format">正在录制触摸... %1$.1fs | %2$d 个事件</string>
+</resources>

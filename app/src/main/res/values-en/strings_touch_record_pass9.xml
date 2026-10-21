@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="text_touch_recording_status_initial">Recording touches... 0.0s | 0 events</string>
+    <string name="text_touch_recording_status_format">Recording touches... %1$.1fs | %2$d events</string>
+</resources>

@@ -222,7 +222,11 @@ class TouchRecordOverlay(
     private fun updateHint() {
         val elapsedMs = touchEvents.lastOrNull()?.timestamp ?: 0L
         val elapsedSec = elapsedMs / 1000.0
-        val statusText = "录制中... ${String.format("%.1f", elapsedSec)}s | ${touchEvents.size} 事件"
+        val statusText = context.getString(
+            R.string.text_touch_recording_status_format,
+            elapsedSec,
+            touchEvents.size
+        )
         hintView?.findViewById<android.widget.TextView>(R.id.tv_status)?.text = statusText
     }
 
