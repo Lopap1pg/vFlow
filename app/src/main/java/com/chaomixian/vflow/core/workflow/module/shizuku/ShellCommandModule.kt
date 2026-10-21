@@ -29,9 +29,9 @@ class ShellCommandModule : BaseModule() {
 
     override val id = "vflow.shizuku.shell_command"
     override val metadata = ActionMetadata(
-        name = "执行Shell命令",  // Fallback
+        name = "执行Shell命令",
         nameStringRes = R.string.module_vflow_shizuku_shell_command_name,
-        description = "通过 Shell 执行命令 (支持 Root/Shizuku)。",  // Fallback
+        description = "通过 Shell 执行命令 (支持 Root/Shizuku)。",
         descriptionStringRes = R.string.module_vflow_shizuku_shell_command_desc,
         iconRes = R.drawable.rounded_terminal_24,
         category = "Shizuku",
@@ -50,7 +50,6 @@ class ShellCommandModule : BaseModule() {
 
     private val modeOptions = listOf(MODE_AUTO, MODE_SHIZUKU, MODE_ROOT, MODE_CORE, MODE_CORE_ROOT)
 
-    // 动态权限声明
     override fun getRequiredPermissions(step: ActionStep?): List<Permission> {
         val mode = step?.parameters?.get("mode") as? String ?: MODE_AUTO
         return when (mode) {
@@ -58,7 +57,6 @@ class ShellCommandModule : BaseModule() {
             MODE_SHIZUKU -> listOf(PermissionManager.SHIZUKU)
             MODE_CORE -> listOf(PermissionManager.CORE)
             MODE_CORE_ROOT -> listOf(PermissionManager.CORE_ROOT)
-            // 自动模式下，根据全局设置返回
             else -> ShellManager.getRequiredPermissions(com.chaomixian.vflow.core.logging.LogManager.applicationContext)
         }
     }
@@ -109,12 +107,9 @@ class ShellCommandModule : BaseModule() {
         val modeDisplay = getInputs()
             .find { it.id == "mode" }
             ?.let { input ->
-                val index = input.options.indexOf(mode)
-                if (index >= 0 && index < input.optionsStringRes.size) {
-                    context.getString(input.optionsStringRes[index])
-                } else {
-                    mode
-                }
+                val normalizedMode = input.normalizeEnumValue(mode) ?: mode
+                val index = input.options.indexOf(normalizedMode)
+                input.getLocalizedOptions(context).getOrNull(index) ?: normalizedMode
             } ?: mode
         val commandPill = PillUtil.createPillFromParam(
             step.parameters["command"],
@@ -127,6 +122,7 @@ class ShellCommandModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val modeInput = getInputs().first { it.id == "mode" }
         val rawModeStr = context.getVariableAsString("mode", MODE_AUTO)
         val modeStr = modeInput.normalizeEnumValue(rawModeStr) ?: rawModeStr
@@ -134,7 +130,10 @@ class ShellCommandModule : BaseModule() {
         val command = VariableResolver.resolve(rawCommand, context)
 
         if (command.isBlank()) {
-            return ExecutionResult.Failure("参数错误", "要执行的命令不能为空。")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.shell_command_parameter_error_title),
+                appContext.getString(R.string.error_vflow_shizuku_shell_command_empty)
+            )
         }
 
         val mode = when (modeStr) {
@@ -144,10 +143,12 @@ class ShellCommandModule : BaseModule() {
             MODE_CORE_ROOT -> ShellManager.ShellMode.CORE_ROOT
             else -> ShellManager.ShellMode.AUTO
         }
+        val modeIndex = modeInput.options.indexOf(modeStr)
+        val modeDisplay = modeInput.getLocalizedOptions(appContext).getOrNull(modeIndex) ?: modeStr
 
-        onProgress(ProgressUpdate("正在通过 $modeStr 执行: $command"))
+        onProgress(ProgressUpdate(appContext.getString(R.string.shell_command_executing, modeDisplay, command)))
 
-        val result = ShellManager.execShellCommandWithResult(context.applicationContext, command, mode)
+        val result = ShellManager.execShellCommandWithResult(appContext, command, mode)
 
         return ExecutionResult.Success(mapOf(
             "result" to VString(result.output),
