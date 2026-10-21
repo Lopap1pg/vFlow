@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_config_layout_style">レイアウト</string>
+    <string name="widget_config_select_workflows">ワークフローを選択</string>
+    <string name="widget_config_layout_4x2">4×2グリッド（4個）</string>
+    <string name="widget_config_layout_2x2">2×2縦配置（2個）</string>
+    <string name="widget_config_deleted_workflow">削除されたワークフロー</string>
+    <string name="widget_config_title">ウィジェットを設定</string>
+    <string name="widget_config_select_workflows_count">ワークフローを選択（%1$d個）</string>
+    <string name="widget_config_slot_with_workflow">スロット %1$d: %2$s</string>
+    <string name="widget_config_select_slot">スロット %1$d を選択</string>
+    <string name="widget_config_clear_slot">[スロットをクリア]</string>
+    <string name="widget_config_select_slot_workflow">スロット %1$d のワークフローを選択</string>
+</resources>
