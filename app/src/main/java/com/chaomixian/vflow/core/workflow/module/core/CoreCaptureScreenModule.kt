@@ -26,9 +26,9 @@ class CoreCaptureScreenModule : BaseModule() {
 
     override val id = "vflow.core.capture_screen"
     override val metadata = ActionMetadata(
-        name = "截屏",  // Fallback
+        name = "截屏",
         nameStringRes = R.string.module_vflow_core_capture_screen_name,
-        description = "使用 vFlow Core 捕获屏幕截图，基于scrcpy原理实现。",  // Fallback
+        description = "使用 vFlow Core 捕获屏幕截图，基于scrcpy原理实现。",
         descriptionStringRes = R.string.module_vflow_core_capture_screen_desc,
         iconRes = R.drawable.rounded_fullscreen_portrait_24,
         category = "Core (Beta)",
@@ -42,9 +42,7 @@ class CoreCaptureScreenModule : BaseModule() {
 
     private val outputFormatOptions = listOf("PNG", "JPEG")
 
-    override fun getRequiredPermissions(step: ActionStep?): List<Permission> {
-        return listOf(PermissionManager.CORE)
-    }
+    override fun getRequiredPermissions(step: ActionStep?): List<Permission> = listOf(PermissionManager.CORE)
 
     override fun getInputs(): List<InputDefinition> = listOf(
         InputDefinition("output_format", "输出格式", ParameterType.ENUM, "PNG", options = outputFormatOptions, acceptsMagicVariable = false, nameStringRes = R.string.param_vflow_core_capture_screen_output_format_name),
@@ -69,52 +67,49 @@ class CoreCaptureScreenModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
-        // 1. 确保 Core 连接
-        val connected = withContext(Dispatchers.IO) {
-            VFlowCoreBridge.connect(context.applicationContext)
-        }
+        val appContext = context.applicationContext
+        val connected = withContext(Dispatchers.IO) { VFlowCoreBridge.connect(appContext) }
         if (!connected) {
             return ExecutionResult.Failure(
-                "Core 未连接",
-                "vFlow Core 服务未运行。请确保已授予 Shizuku 或 Root 权限。"
+                appContext.getString(R.string.core_runtime_not_connected_title),
+                appContext.getString(R.string.core_runtime_not_connected_detail)
             )
         }
 
-        // 2. 获取参数
         val outputFormat = context.getVariableAsString("output_format", "PNG")
-        // 现在 variables 是 Map<String, VObject>，使用 getVariableAsInt 获取
         val quality = context.getVariableAsInt("quality") ?: 90
         val maxWidth = context.getVariableAsInt("max_width") ?: 0
         val maxHeight = context.getVariableAsInt("max_height") ?: 0
-
         val format = outputFormat.lowercase()
 
-        onProgress(ProgressUpdate("正在截屏..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.core_capture_screen_progress)))
 
-        // 3. 执行截图并保存到工作流临时目录
         val result = withContext(Dispatchers.IO) {
-            captureAndSaveToWorkDir(format, quality, maxWidth, maxHeight, context.workDir)
+            captureAndSaveToWorkDir(appContext, format, quality, maxWidth, maxHeight, context.workDir)
         }
 
         return when (result) {
             is CaptureResult.Success -> {
-                onProgress(ProgressUpdate("截屏成功"))
+                onProgress(ProgressUpdate(appContext.getString(R.string.core_capture_screen_success)))
                 val imageUri = "file://${result.filePath}"
-                val outputs = mapOf(
-                    "success" to VBoolean(true),
-                    "image" to VImage(imageUri),
-                    "width" to VNumber(result.width.toDouble()),
-                    "height" to VNumber(result.height.toDouble())
+                ExecutionResult.Success(
+                    mapOf(
+                        "success" to VBoolean(true),
+                        "image" to VImage(imageUri),
+                        "width" to VNumber(result.width.toDouble()),
+                        "height" to VNumber(result.height.toDouble())
+                    )
                 )
-                ExecutionResult.Success(outputs)
             }
-            is CaptureResult.Error -> {
-                ExecutionResult.Failure("截屏失败", result.message)
-            }
+            is CaptureResult.Error -> ExecutionResult.Failure(
+                appContext.getString(R.string.core_capture_screen_failed_title),
+                result.message
+            )
         }
     }
 
     private fun captureAndSaveToWorkDir(
+        context: Context,
         format: String,
         quality: Int,
         maxWidth: Int,
@@ -122,21 +117,15 @@ class CoreCaptureScreenModule : BaseModule() {
         workDir: File
     ): CaptureResult {
         return try {
-            // 1. 从Core获取Base64数据
             val base64Data = VFlowCoreBridge.captureScreenEx(format, quality, maxWidth, maxHeight)
             if (base64Data.isEmpty()) {
-                return CaptureResult.Error("未能获取屏幕截图数据")
+                return CaptureResult.Error(context.getString(R.string.core_capture_screen_no_data))
             }
 
-            // 2. 生成文件名并保存到工作流临时目录
             val fileName = "screenshot_${System.currentTimeMillis()}.$format"
             val file = File(workDir, fileName)
-
-            // 3. 解码Base64并写入文件
             val imageBytes = Base64.decode(base64Data, Base64.NO_WRAP)
             file.writeBytes(imageBytes)
-
-            // 4. 获取图像尺寸
             val dimensions = VFlowCoreBridge.getScreenSize()
 
             CaptureResult.Success(
@@ -145,7 +134,12 @@ class CoreCaptureScreenModule : BaseModule() {
                 filePath = file.absolutePath
             )
         } catch (e: Exception) {
-            CaptureResult.Error("截图失败: ${e.message}")
+            CaptureResult.Error(
+                context.getString(
+                    R.string.core_capture_screen_failed_detail,
+                    e.localizedMessage ?: context.getString(R.string.error_unknown_error)
+                )
+            )
         }
     }
 
