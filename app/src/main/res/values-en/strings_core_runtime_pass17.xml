@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_hotspot_state_reading">Reading hotspot state with vFlow Core...</string>
+    <string name="core_hotspot_state_result">Hotspot state: %1$s</string>
+    <string name="core_clipboard_result">Clipboard content: %1$s</string>
+</resources>
