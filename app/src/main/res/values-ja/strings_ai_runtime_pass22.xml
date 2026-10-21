@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ai_completion_config_error_title">設定エラー</string>
+    <string name="ai_completion_api_key_required">API Keyを入力してください。</string>
+    <string name="ai_completion_prompt_required">プロンプトを入力してください。</string>
+    <string name="ai_completion_unknown_error">不明なエラー</string>
+</resources>
