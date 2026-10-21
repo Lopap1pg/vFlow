@@ -46,6 +46,7 @@ class JsModule : BaseModule() {
         InputDefinition(
             id = "script",
             name = "JavaScript 脚本",
+            nameStringRes = R.string.param_vflow_system_js_script_name,
             staticType = ParameterType.STRING,
             defaultValue = "vflow.device.toast({ message: 'Hello from JavaScript!' })\n\n// Read values from script inputs.\n// var myVar = inputs.my_variable\n\n// Return a dictionary as outputs.\nvar r = {};\nr.result = 1 + 1;\nr;",
             acceptsMagicVariable = true,
@@ -54,6 +55,7 @@ class JsModule : BaseModule() {
         InputDefinition(
             id = "inputs",
             name = "脚本输入",
+            nameStringRes = R.string.param_vflow_system_js_inputs_name,
             staticType = ParameterType.ANY,
             defaultValue = emptyMap<String, Any>(),
             acceptsMagicVariable = true
@@ -61,7 +63,12 @@ class JsModule : BaseModule() {
     )
 
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
-        OutputDefinition("outputs", "脚本返回值", VTypeRegistry.DICTIONARY.id)
+        OutputDefinition(
+            "outputs",
+            "脚本返回值",
+            VTypeRegistry.DICTIONARY.id,
+            nameStringRes = R.string.output_vflow_system_js_outputs_name
+        )
     )
 
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
@@ -81,9 +88,13 @@ class JsModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val script = context.getVariableAsString("script", "")
         if (script.isNullOrBlank()) {
-            return ExecutionResult.Failure("脚本错误", "JavaScript脚本内容不能为空。")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_js_script_empty),
+                appContext.getString(R.string.error_vflow_system_js_script_empty_desc)
+            )
         }
 
         val scriptInputs = mutableMapOf<String, Any?>()
@@ -101,17 +112,20 @@ class JsModule : BaseModule() {
             }
         }
 
-        onProgress(ProgressUpdate("正在准备JavaScript环境..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_js_preparing)))
         val jsExecutor = JsExecutor(context)
 
         return try {
-            onProgress(ProgressUpdate("正在执行JavaScript脚本..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_js_executing)))
             val resultTable = jsExecutor.execute(script, scriptInputs)
-            onProgress(ProgressUpdate("脚本执行完成"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_js_completed)))
             val vMap = resultTable.mapValues { VObjectFactory.from(it.value) }
             ExecutionResult.Success(mapOf("outputs" to VDictionary(vMap)))
         } catch (e: Exception) {
-            ExecutionResult.Failure("JavaScript脚本执行失败", e.localizedMessage ?: "未知错误")
+            ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_js_execution_failed),
+                e.localizedMessage ?: appContext.getString(R.string.error_unknown_error)
+            )
         }
     }
 }
