@@ -15,7 +15,6 @@ import com.chaomixian.vflow.core.types.VTypeRegistry
 import com.chaomixian.vflow.core.types.basic.VBoolean
 import com.chaomixian.vflow.core.workflow.model.ActionStep
 import com.chaomixian.vflow.permissions.Permission
-import com.chaomixian.vflow.permissions.PermissionManager
 import com.chaomixian.vflow.services.ShellManager
 import com.chaomixian.vflow.ui.workflow_editor.PillUtil
 
@@ -30,8 +29,8 @@ class WifiModule : BaseModule() {
     override val metadata = ActionMetadata(
         nameStringRes = R.string.module_vflow_system_wifi_name,
         descriptionStringRes = R.string.module_vflow_system_wifi_desc,
-        name = "Wi-Fi 设置",  // Fallback
-        description = "开启、关闭或切换Wi-Fi状态。",  // Fallback
+        name = "Wi-Fi 设置",
+        description = "开启、关闭或切换Wi-Fi状态。",
         iconRes = R.drawable.rounded_android_wifi_3_bar_24,
         category = "应用与系统",
         categoryId = "device"
@@ -48,9 +47,7 @@ class WifiModule : BaseModule() {
 
     private val stateOptions = listOf(STATE_ON, STATE_OFF, STATE_TOGGLE)
 
-    // 动态声明权限：如果使用 Shell (Root/Shizuku) 则需要相应权限
     override fun getRequiredPermissions(step: ActionStep?): List<Permission> {
-        // 总是把 Shell 权限加进去，因为我们优先尝试 Shell
         return ShellManager.getRequiredPermissions(LogManager.applicationContext)
     }
 
@@ -58,7 +55,7 @@ class WifiModule : BaseModule() {
         InputDefinition(
             id = "state",
             nameStringRes = R.string.param_vflow_system_wifi_state_name,
-            name = "状态",  // Fallback
+            name = "状态",
             staticType = ParameterType.ENUM,
             defaultValue = STATE_TOGGLE,
             options = stateOptions,
@@ -101,37 +98,41 @@ class WifiModule : BaseModule() {
         val stateInput = getInputs().first { it.id == "state" }
         val rawState = context.getVariableAsString("state", STATE_TOGGLE)
         val state = stateInput.normalizeEnumValue(rawState) ?: rawState
-        onProgress(ProgressUpdate("正在尝试 $state Wi-Fi..."))
+        val localizedState = when (state) {
+            STATE_ON -> appContext.getString(R.string.option_vflow_system_wifi_state_on)
+            STATE_OFF -> appContext.getString(R.string.option_vflow_system_wifi_state_off)
+            STATE_TOGGLE -> appContext.getString(R.string.option_vflow_system_wifi_state_toggle)
+            else -> state
+        }
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_wifi_trying, localizedState)))
 
-        // 1. 优先尝试 Shell (Root 或 Shizuku)
-        // 这样即使在 Android 10+ 也能静默操作
         val wifiManager = appContext.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val targetState = when (state) {
             STATE_ON -> true
             STATE_OFF -> false
             STATE_TOGGLE -> !wifiManager.isWifiEnabled
-            else -> return ExecutionResult.Failure("参数错误", "无效的状态: $state")
+            else -> return ExecutionResult.Failure(
+                appContext.getString(R.string.module_vflow_system_wifi_name),
+                appContext.getString(R.string.error_vflow_system_wifi_invalid_state, state)
+            )
         }
         val command = if (targetState) "svc wifi enable" else "svc wifi disable"
 
-        onProgress(ProgressUpdate("尝试通过 Shell 执行..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_wifi_shell)))
         val shellResult = ShellManager.execShellCommand(appContext, command, ShellManager.ShellMode.AUTO)
 
         if (!shellResult.startsWith("Error")) {
             return ExecutionResult.Success(mapOf("success" to VBoolean(true)))
         }
 
-        // 2. Shell 失败，回退到原有逻辑
         DebugLogger.w("WifiModule", "Shell 执行失败: $shellResult，尝试回退到标准 API。")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            // Android 10 及以上版本，打开设置面板
-            onProgress(ProgressUpdate("Shell 不可用，正在打开设置面板..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_wifi_panel)))
             val intent = Intent(Settings.Panel.ACTION_WIFI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             appContext.startActivity(intent)
             return ExecutionResult.Success(mapOf("success" to VBoolean(true)))
         } else {
-            // Android 10 以下版本，使用旧 API
             val success = wifiManager.setWifiEnabled(targetState)
             return ExecutionResult.Success(mapOf("success" to VBoolean(success)))
         }

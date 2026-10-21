@@ -47,6 +47,7 @@ class LuaModule : BaseModule() {
         InputDefinition(
             id = "script",
             name = "Lua 脚本",
+            nameStringRes = R.string.param_vflow_system_lua_script_name,
             staticType = ParameterType.STRING,
             defaultValue = "vflow.device.toast({ message = 'Hello from Lua!' })\n\n-- Read values from script inputs.\n-- local myVar = inputs.my_variable\n\n-- Return a table as outputs.\nreturn { result = 'some value' }",
             acceptsMagicVariable = false
@@ -54,6 +55,7 @@ class LuaModule : BaseModule() {
         InputDefinition(
             id = "inputs",
             name = "脚本输入",
+            nameStringRes = R.string.param_vflow_system_lua_inputs_name,
             staticType = ParameterType.ANY,
             defaultValue = emptyMap<String, Any>(),
             acceptsMagicVariable = true // 这里的接受其实是其value接受魔法变量
@@ -61,7 +63,12 @@ class LuaModule : BaseModule() {
     )
 
     override fun getOutputs(step: ActionStep?): List<OutputDefinition> = listOf(
-        OutputDefinition("outputs", "脚本返回值", VTypeRegistry.DICTIONARY.id)
+        OutputDefinition(
+            "outputs",
+            "脚本返回值",
+            VTypeRegistry.DICTIONARY.id,
+            nameStringRes = R.string.output_vflow_system_lua_outputs_name
+        )
     )
 
     override fun getSummary(context: Context, step: ActionStep): CharSequence {
@@ -82,9 +89,13 @@ class LuaModule : BaseModule() {
         context: ExecutionContext,
         onProgress: suspend (ProgressUpdate) -> Unit
     ): ExecutionResult {
+        val appContext = context.applicationContext
         val script = context.getVariableAsString("script", "")
         if (script.isNullOrBlank()) {
-            return ExecutionResult.Failure("脚本错误", "Lua脚本内容不能为空。")
+            return ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_lua_script_empty),
+                appContext.getString(R.string.error_vflow_system_lua_script_empty_desc)
+            )
         }
 
         val scriptInputs = mutableMapOf<String, Any?>()
@@ -103,18 +114,21 @@ class LuaModule : BaseModule() {
             }
         }
 
-        onProgress(ProgressUpdate("正在准备Lua环境..."))
+        onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_lua_preparing)))
         val luaExecutor = LuaExecutor(context)
 
         return try {
-            onProgress(ProgressUpdate("正在执行Lua脚本..."))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_lua_executing)))
             val resultTable = luaExecutor.execute(script, scriptInputs)
-            onProgress(ProgressUpdate("脚本执行完成"))
+            onProgress(ProgressUpdate(appContext.getString(R.string.msg_vflow_system_lua_completed)))
             // Convert Map<String, Any?> to Map<String, VObject>
             val vMap = resultTable.mapValues { VObjectFactory.from(it.value) }
             ExecutionResult.Success(mapOf("outputs" to VDictionary(vMap)))
         } catch (e: Exception) {
-            ExecutionResult.Failure("Lua脚本执行失败", e.localizedMessage ?: "未知错误")
+            ExecutionResult.Failure(
+                appContext.getString(R.string.error_vflow_system_lua_execution_failed),
+                e.localizedMessage ?: appContext.getString(R.string.error_unknown_error)
+            )
         }
     }
 }
