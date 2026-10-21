@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="widget_config_layout_style">Layout style</string>
+    <string name="widget_config_select_workflows">Select workflows</string>
     <string name="widget_config_layout_4x2">4x2 grid (4)</string>
     <string name="widget_config_layout_2x2">2x2 vertical (2)</string>
     <string name="widget_config_deleted_workflow">Deleted workflow</string>
