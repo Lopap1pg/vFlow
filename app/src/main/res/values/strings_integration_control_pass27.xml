@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="integration_control_parameter_error_title">参数错误</string>
+    <string name="integration_control_invalid_action">无效的 %1$s 操作: %2$s</string>
+    <string name="integration_control_sending">正在向 %1$s 发送“%2$s”控制 Intent...</string>
+    <string name="integration_control_call_failed_title">%1$s 调用失败</string>
+    <string name="integration_control_send_failed">发送控制 Intent 失败: %1$s</string>
+    <string name="integration_control_unknown_error">未知错误</string>
+</resources>
